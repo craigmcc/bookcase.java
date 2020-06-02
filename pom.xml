@@ -45,6 +45,7 @@
     <!-- Modules -->
     <modules>
         <module>bookcase-model</module>
+        <module>bookcase-service</module>
     </modules>
 
     <!-- Properties -->
@@ -52,6 +53,7 @@
 
         <!-- Version Dependencies -->
         <bookcase-model.version>1.0.0-SNAPSHOT</bookcase-model.version>
+        <bookcase-service.version>1.0.0-SNAPSHOT</bookcase-service.version>
         <model-jpa.version>1.0.0-SNAPSHOT</model-jpa.version>
 
     </properties>

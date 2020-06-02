@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>bookcase</artifactId>
+        <groupId>org.craigmcc.bookcase</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>bookcase-service</artifactId>
+
+    <!-- Build Configuration -->
+    <build>
+        <finalName>bookcase-service</finalName>
+    </build>
+
+    <!-- Dependencies -->
+    <dependencies>
+
+        <!-- Java Enterprise JavaBeans (EJB) APIs -->
+        <dependency>
+            <groupId>javax.ejb</groupId>
+            <artifactId>ejb-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Java Contexts and Dependency Injection (CDI) APIs -->
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Java Injection APIs -->
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Java Persistence (JPA) APIs -->
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Java Bean Validation APIs -->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Bookcase: Model Module -->
+        <dependency>
+            <groupId>org.craigmcc.bookcase</groupId>
+            <artifactId>bookcase-model</artifactId>
+            <version>${bookcase-model.version}</version>
+        </dependency>
+
+        <!-- Personal Library:  Model Classes -->
+        <dependency>
+            <groupId>org.craigmcc.library</groupId>
+            <artifactId>model-jpa</artifactId>
+            <version>${model-jpa.version}</version>
+        </dependency>
+
+        <!-- Microprofile OpenAPI APIs -->
+        <dependency>
+            <groupId>org.eclipse.microprofile.openapi</groupId>
+            <artifactId>microprofile-openapi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- JBoss Extended EJB 3.2 APIs -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.ejb</groupId>
+            <artifactId>jboss-ejb-api_3.2_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
+</project>
