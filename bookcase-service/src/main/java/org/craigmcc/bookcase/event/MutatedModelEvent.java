@@ -55,24 +55,20 @@ public class MutatedModelEvent extends Model<MutatedModelEvent> {
             nullable = false
     )
     @Schema(description = "Object whose mutated state is documented by this event.")
-    @NotBlank(message = "model is required and must not be blank")
+    @NotBlank(message = "model: Required and must not be blank")
     private String model;  // TODO - convert to serialized form?
 
     @Column(
             nullable = false
     )
     @Schema(description = "Type of mutation documented by this event.")
-//    @NotBlank(message = "type is required and must not be blank")
+    @NotBlank(message = "type: Required and must not be blank")
     private MutatedModelEvent.Type type;
 
     // Static Variables ------------------------------------------------------
 
-    public static final Comparator<MutatedModelEvent> UpdatedComparator = new Comparator<>() {
-        @Override
-        public int compare(MutatedModelEvent o1, MutatedModelEvent o2) {
-            return o1.getUpdated().compareTo(o2.getUpdated());
-        }
-    };
+    public static final Comparator<MutatedModelEvent> UpdatedComparator = (o1, o2) ->
+            o1.getUpdated().compareTo(o2.getUpdated());
 
     // Constructors ----------------------------------------------------------
 
@@ -112,6 +108,7 @@ public class MutatedModelEvent extends Model<MutatedModelEvent> {
         this.type = that.type;
     }
 
+    @Override
     public boolean equals(Object object) {
         if (!(object instanceof MutatedModelEvent)) {
             return false;
@@ -124,6 +121,7 @@ public class MutatedModelEvent extends Model<MutatedModelEvent> {
                 .isEquals();
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .appendSuper(super.hashCode())
@@ -132,6 +130,7 @@ public class MutatedModelEvent extends Model<MutatedModelEvent> {
                 .toHashCode();
     }
 
+    @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
                 .appendSuper(super.toString())
