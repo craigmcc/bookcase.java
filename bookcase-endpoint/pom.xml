@@ -76,6 +76,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Microprofile OpenAPI UI Extension -->
+        <dependency>
+            <groupId>org.microprofile-ext.openapi-ext</groupId>
+            <artifactId>openapi-ui</artifactId>
+        </dependency>
+
         <!-- Bookcase: Model Module -->
         <dependency>
             <groupId>org.craigmcc.bookcase</groupId>

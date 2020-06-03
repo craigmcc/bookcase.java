@@ -15,9 +15,28 @@
  */
 package org.craigmcc.bookcase.endpoint.application;
 
+import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
+import org.eclipse.microprofile.openapi.annotations.info.Contact;
+import org.eclipse.microprofile.openapi.annotations.info.Info;
+import org.eclipse.microprofile.openapi.annotations.info.License;
+
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-@ApplicationPath("/rest")
+@ApplicationPath("/api")
+@OpenAPIDefinition(
+        info = @Info(
+                contact = @Contact(
+                        email = "craigmcc@gmail.com",
+                        name = "Craig McClanahan"
+                ),
+                license = @License(
+                        name = "Apache License 2.0",
+                        url = "http://apache.org/licenses/LICENSE-2.0"
+                ),
+                title = "Bookcase Application API",
+                version = "1.0.0-SNAPSHOT"
+        )
+)
 public class RestApplication extends Application {
 }
