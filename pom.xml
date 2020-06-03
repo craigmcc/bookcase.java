@@ -39,7 +39,7 @@
 
     <!-- Build Configuration -->
     <build>
-        <finalName>bookcase</finalName>
+        <finalName>bookcase-parent</finalName>
     </build>
 
     <!-- Modules -->
@@ -47,12 +47,18 @@
         <module>bookcase-model</module>
         <module>bookcase-service</module>
         <module>bookcase-endpoint</module>
+        <module>bookcase-web</module>
     </modules>
 
     <!-- Properties -->
     <properties>
 
+        <!-- Maven Configuration -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <!-- Version Dependencies -->
+        <bookcase-web.version>1.0.0-SNAPSHOT</bookcase-web.version>
+        <bookcase-endpoint.version>1.0.0-SNAPSHOT</bookcase-endpoint.version>
         <bookcase-model.version>1.0.0-SNAPSHOT</bookcase-model.version>
         <bookcase-service.version>1.0.0-SNAPSHOT</bookcase-service.version>
         <model-jpa.version>1.0.0-SNAPSHOT</model-jpa.version>
