@@ -21,6 +21,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.craigmcc.bookcase.model.converter.BookLocationConverter;
+import org.craigmcc.bookcase.model.validator.ValidBookLocation;
 import org.craigmcc.library.model.Model;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
@@ -128,6 +129,7 @@ public class Book extends Model<Book> implements Constants {
     @Convert(converter = BookLocationConverter.class)
     @Schema(description = "Location where this book is stored.")
     @JsonInclude(NON_NULL)
+    @ValidBookLocation
     private Location location;
 
     @OneToMany(

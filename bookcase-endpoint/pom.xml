@@ -25,54 +25,48 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>bookcase-model</artifactId>
+    <artifactId>bookcase-endpoint</artifactId>
 
     <!-- Build Configuration -->
     <build>
-        <finalName>bookcase-model</finalName>
+        <finalName>bookcase-endpoint</finalName>
     </build>
 
     <!-- Dependencies -->
     <dependencies>
 
-        <!-- Jackson Annotations -->
+        <!-- Jackson Formatting for LocalDateTime and friends -->
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
 
-        <!-- Java Persistence API (JPA) APIs -->
+        <!-- Java Contexts and Dependency Injection (CDI) APIs -->
         <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>javax.persistence-api</artifactId>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
             <scope>provided</scope>
         </dependency>
 
-        <!-- Bean Validation APIs -->
+        <!-- Java Injection APIs -->
         <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
             <scope>provided</scope>
         </dependency>
 
-        <!-- JUnit 4 -->
+        <!-- Standard JAX-RS APIs -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
-        <!-- Equals/Hashcode Verifier -->
+        <!-- Microprofile Metrics APIs -->
         <dependency>
-            <groupId>nl.jqno.equalsverifier</groupId>
-            <artifactId>equalsverifier</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Apache Commons Lang3 Utilities -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
+            <groupId>org.eclipse.microprofile.metrics</groupId>
+            <artifactId>microprofile-metrics-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Microprofile OpenAPI APIs -->
@@ -82,18 +76,25 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Personal Library:  Model Classes -->
+        <!-- Bookcase: Model Module -->
         <dependency>
-            <groupId>org.craigmcc.library</groupId>
-            <artifactId>model-jpa</artifactId>
-            <version>${model-jpa.version}</version>
+            <groupId>org.craigmcc.bookcase</groupId>
+            <artifactId>bookcase-model</artifactId>
+            <version>${bookcase-model.version}</version>
         </dependency>
 
-        <!-- Hamcrest Matchers for Tests -->
+        <!-- Bookcase: Service Module -->
         <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>java-hamcrest</artifactId>
-            <scope>test</scope>
+            <groupId>org.craigmcc.bookcase</groupId>
+            <artifactId>bookcase-service</artifactId>
+            <version>${bookcase-service.version}</version>
+        </dependency>
+
+        <!-- Uses Jackson for JSON Pretty Printing -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson2-provider</artifactId>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

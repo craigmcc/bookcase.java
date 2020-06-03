@@ -46,6 +46,7 @@
     <modules>
         <module>bookcase-model</module>
         <module>bookcase-service</module>
+        <module>bookcase-endpoint</module>
     </modules>
 
     <!-- Properties -->

@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2020 craigmcc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -19,6 +34,13 @@
 
     <!-- Dependencies -->
     <dependencies>
+
+        <!-- Java Standard Annotation APIs -->
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Java Enterprise JavaBeans (EJB) APIs -->
         <dependency>
@@ -48,11 +70,25 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Java Transaction APIs -->
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>javax.transaction-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Java Bean Validation APIs -->
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- JUnit 4 -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <!-- Bookcase: Model Module -->
@@ -69,11 +105,32 @@
             <version>${model-jpa.version}</version>
         </dependency>
 
+        <!-- Microprofile Config APIs -->
+        <dependency>
+            <groupId>org.eclipse.microprofile.config</groupId>
+            <artifactId>microprofile-config-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Microprofile OpenAPI APIs -->
         <dependency>
             <groupId>org.eclipse.microprofile.openapi</groupId>
             <artifactId>microprofile-openapi-api</artifactId>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- Arquillian JUnit Test Runner -->
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Hamcrest Matchers for tests -->
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>java-hamcrest</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <!-- JBoss Extended EJB 3.2 APIs -->
@@ -84,5 +141,202 @@
         </dependency>
 
     </dependencies>
+
+    <!-- Dependency Management -->
+    <dependencyManagement>
+        <dependencies>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- Profiles -->
+    <profiles>
+
+        <!-- Arquillian Glassfish Embedded Profile -->
+        <!--
+                <profile>
+
+                    <id>arq-glassfish-embedded</id>
+                    <activation>
+                        <activeByDefault>false</activeByDefault>
+                    </activation>
+
+                    <build>
+
+                        <plugins>
+                            <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-surefire-plugin</artifactId>
+                                <configuration>
+                                    <systemPropertyVariables>
+                                        <arquillian.launch>
+                                            glassfish-embedded
+                                        </arquillian.launch>
+                                        <java.util.logging.config.file>
+                                            ${project.build.testOutputDirectory}/logging.properties
+                                        </java.util.logging.config.file>
+                                        <derby.stream.error.file>
+                                            ${project.build.directory}/derby.log
+                                        </derby.stream.error.file>
+                                    </systemPropertyVariables>
+                                </configuration>
+                            </plugin>
+                        </plugins>
+
+                        <testResources>
+                            <testResource>
+                                <directory>src/test/resources</directory>
+                            </testResource>
+                            <testResource>
+                                <directory>src/test/resources-glassfish-embedded</directory>
+                            </testResource>
+                        </testResources>
+
+                    </build>
+
+                    <dependencies>
+
+                        &lt;!&ndash; Glassfish Arquillian Embedded Server Support &ndash;&gt;
+                        <dependency>
+                            <groupId>org.jboss.arquillian.container</groupId>
+                            <artifactId>arquillian-glassfish-embedded-3.1</artifactId>
+                            <scope>test</scope>
+                        </dependency>
+
+                        &lt;!&ndash; Glassfish Embedded Extra APIs &ndash;&gt;
+                        <dependency>
+                            <groupId>org.glassfish.main.extras</groupId>
+                            <artifactId>glassfish-embedded-all</artifactId>
+                            <scope>provided</scope>
+                        </dependency>
+
+                    </dependencies>
+
+                </profile>
+        -->
+
+        <!-- Arquillian WildFly Managed Profile -->
+        <profile>
+
+            <id>arq-wildfly-managed</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <build>
+
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <arquillian.launch>
+                                    wildfly19-managed
+                                </arquillian.launch>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+
+                <testResources>
+                    <testResource>
+                        <directory>src/test/resources</directory>
+                    </testResource>
+                    <testResource>
+                        <directory>src/test/resources-wildfly-managed</directory>
+                    </testResource>
+                </testResources>
+
+            </build>
+
+            <dependencies>
+
+                <!-- JBoss Arquillian Servlet Protocol Support -->
+                <dependency>
+                    <groupId>org.jboss.arquillian.protocol</groupId>
+                    <artifactId>arquillian-protocol-servlet</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <!-- Wildfly Arquillian Managed Server Support -->
+                <dependency>
+                    <groupId>org.wildfly.arquillian</groupId>
+                    <artifactId>wildfly-arquillian-container-managed</artifactId>
+                    <scope>test</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>sun.jdk</groupId>
+                            <artifactId>jconsole</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+
+            </dependencies>
+
+        </profile>
+
+        <!-- Arquillian WildFly Remote Profile -->
+        <profile>
+
+            <id>arq-wildfly-remote</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <build>
+
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <arquillian.launch>
+                                    wildfly19-remote
+                                </arquillian.launch>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+
+                <testResources>
+                    <testResource>
+                        <directory>src/test/resources</directory>
+                    </testResource>
+                    <testResource>
+                        <directory>src/test/resources-wildfly-remote</directory>
+                    </testResource>
+                </testResources>
+
+            </build>
+
+            <dependencies>
+
+                <!-- JBoss Arquillian Servlet Protocol Support -->
+                <dependency>
+                    <groupId>org.jboss.arquillian.protocol</groupId>
+                    <artifactId>arquillian-protocol-servlet</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <!--> Wildfly Arquillian Remote Server Support -->
+                <dependency>
+                    <groupId>org.wildfly</groupId>
+                    <artifactId>wildfly-arquillian-container-remote</artifactId>
+                    <scope>test</scope>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>sun.jdk</groupId>
+                            <artifactId>jconsole</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+
+            </dependencies>
+
+        </profile>
+
+    </profiles>
 
 </project>

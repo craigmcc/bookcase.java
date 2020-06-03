@@ -77,6 +77,8 @@ public interface Constants {
     String MEMBER_NAME = "Member";
     String MEMBER_TABLE = "members";
 
+    String MUTATED_MODEL_EVENT_TABLE = "mutatedModelEvents";
+
     String SERIES_NAME = "Series";
     String SERIES_TABLE = "series";  // Singular and plural :-)
 

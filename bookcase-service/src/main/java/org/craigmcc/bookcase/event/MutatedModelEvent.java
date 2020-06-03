@@ -20,6 +20,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.craigmcc.bookcase.event.validator.ValidEventType;
 import org.craigmcc.library.model.Model;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
@@ -34,12 +35,14 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 
+import static org.craigmcc.bookcase.model.Constants.MUTATED_MODEL_EVENT_TABLE;
+
 @Entity
 @Table(
         indexes = {
                 @Index(columnList = "updated ASC")
         },
-        name = "mutatedModelEvents"
+        name = MUTATED_MODEL_EVENT_TABLE
 )
 @Access(AccessType.FIELD)
 @Schema(
@@ -63,6 +66,7 @@ public class MutatedModelEvent extends Model<MutatedModelEvent> {
     )
     @Schema(description = "Type of mutation documented by this event.")
     @NotBlank(message = "type: Required and must not be blank")
+    @ValidEventType
     private MutatedModelEvent.Type type;
 
     // Static Variables ------------------------------------------------------
@@ -71,6 +75,8 @@ public class MutatedModelEvent extends Model<MutatedModelEvent> {
             o1.getUpdated().compareTo(o2.getUpdated());
 
     // Constructors ----------------------------------------------------------
+
+    public MutatedModelEvent() { }
 
     public MutatedModelEvent(
             @NotNull Model model,

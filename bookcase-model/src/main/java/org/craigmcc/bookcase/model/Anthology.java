@@ -21,6 +21,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.craigmcc.bookcase.model.Book.Location;
+import org.craigmcc.bookcase.model.validator.ValidBookLocation;
 import org.craigmcc.library.model.Model;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
@@ -127,6 +128,7 @@ public class Anthology extends Model<Anthology> implements Constants {
     @Schema(description = "Location where this anthology is stored.  " +
             "By convention, stories in an anthology should be marked as located in an ANTHOLOGY.")
     @JsonInclude(NON_NULL)
+    @ValidBookLocation
     private Book.Location location;
 
     @Column(
