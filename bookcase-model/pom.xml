@@ -27,6 +27,11 @@
 
     <artifactId>bookcase-model</artifactId>
 
+    <name>Bookcase Model</name>
+    <description>
+        Entity classes and unit tests for the Bookcase application.
+    </description>
+
     <!-- Build Configuration -->
     <build>
         <finalName>bookcase-model</finalName>
@@ -75,18 +80,18 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-        <!-- Microprofile OpenAPI APIs -->
-        <dependency>
-            <groupId>org.eclipse.microprofile.openapi</groupId>
-            <artifactId>microprofile-openapi-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- Personal Library:  Model Classes -->
         <dependency>
             <groupId>org.craigmcc.library</groupId>
             <artifactId>model-jpa</artifactId>
             <version>${model-jpa.version}</version>
+        </dependency>
+
+        <!-- Microprofile OpenAPI APIs -->
+        <dependency>
+            <groupId>org.eclipse.microprofile.openapi</groupId>
+            <artifactId>microprofile-openapi-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Hamcrest Matchers for Tests -->

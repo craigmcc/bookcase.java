@@ -27,6 +27,11 @@
 
     <artifactId>bookcase-service</artifactId>
 
+    <name>Bookcase Service</name>
+    <description>
+        Persistence service and functional tests for the Bookcase application.
+    </description>
+
     <!-- Build Configuration -->
     <build>
         <finalName>bookcase-service</finalName>
@@ -119,17 +124,17 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Arquillian JUnit Test Runner -->
-        <dependency>
-            <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-container</artifactId>
-            <scope>test</scope>
-        </dependency>
-
         <!-- Hamcrest Matchers for tests -->
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>java-hamcrest</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Arquillian JUnit Test Runner -->
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
             <scope>test</scope>
         </dependency>
 

@@ -27,6 +27,12 @@
 
     <artifactId>bookcase-endpoint</artifactId>
 
+    <name>Bookcase Endpoint</name>
+    <description>
+        REST endpoint classes for the Bookcase application.
+        Integration tests are part of the bookcase-client module.
+    </description>
+
     <!-- Build Configuration -->
     <build>
         <finalName>bookcase-endpoint</finalName>
