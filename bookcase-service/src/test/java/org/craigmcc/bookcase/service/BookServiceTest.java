@@ -191,6 +191,16 @@ public class BookServiceTest extends AbstractServiceTest {
 
         // Completely empty instance
         final Book book0 = new Book();
+/*
+        System.out.println(">>>>> Inserting book " + book0);
+        try {
+            bookService.insert(book0);
+        } catch (Exception e) {
+            System.out.println(">>>>> Exception: " + e.getClass().getName());
+            System.out.println(">>>>> Message:   " + e.getMessage());
+            e.printStackTrace();
+        }
+*/
         assertThrows(BadRequest.class,
                 () -> bookService.insert(book0));
 
@@ -259,7 +269,7 @@ public class BookServiceTest extends AbstractServiceTest {
 
         // Completely empty instance
         final Book book0 = new Book();
-        assertThrows(BadRequest.class,
+        assertThrows(NotFound.class,
                 () -> bookService.update(book0));
 
         // Missing authorId field
@@ -301,10 +311,10 @@ public class BookServiceTest extends AbstractServiceTest {
                 .getResultList();
     }
 
-    private Optional<Book> findBookById(Long BookId) {
+    private Optional<Book> findBookById(Long bookId) {
         TypedQuery<Book> query = entityManager.createNamedQuery
-                (BOOK_NAME + ".findById", Book.class);
-        query.setParameter(ID_COLUMN, BookId);
+                (BOOK_NAME + ".findById", Book.class)
+                .setParameter(ID_COLUMN, bookId);
         try {
             return Optional.of(query.getSingleResult());
         } catch (NoResultException e) {
@@ -314,8 +324,8 @@ public class BookServiceTest extends AbstractServiceTest {
 
     private List<Book> findBooksByTitle(String title) {
         TypedQuery<Book> query = entityManager.createNamedQuery
-                (BOOK_NAME + ".findByTitle", Book.class);
-        query.setParameter(TITLE_COLUMN, title);
+                (BOOK_NAME + ".findByTitle", Book.class)
+                .setParameter(TITLE_COLUMN, title);
         return query.getResultList();
     }
 
@@ -325,17 +335,17 @@ public class BookServiceTest extends AbstractServiceTest {
         return Books.get(0);
     }
 
-    private List<Member> findMembersByBookId(Long BookId) {
+    private List<Member> findMembersByBookId(Long bookId) {
         TypedQuery<Member> query = entityManager.createNamedQuery
-                (MEMBER_NAME + ".findByBookId", Member.class);
-        query.setParameter(BOOK_ID_COLUMN, BookId);
+                (MEMBER_NAME + ".findByBookId", Member.class)
+                .setParameter(BOOK_ID_COLUMN, bookId);
         return query.getResultList();
     }
 
-    private List<Story> findStoriesByBookId(Long BookId) {
+    private List<Story> findStoriesByBookId(Long bookId) {
         TypedQuery<Story> query = entityManager.createNamedQuery
-                (STORY_NAME + ".findByBookId", Story.class);
-        query.setParameter(BOOK_ID_COLUMN, BookId);
+                (STORY_NAME + ".findByBookId", Story.class)
+                .setParameter(BOOK_ID_COLUMN, bookId);
         return query.getResultList();
     }
 

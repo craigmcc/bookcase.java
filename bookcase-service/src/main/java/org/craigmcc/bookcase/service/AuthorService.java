@@ -25,7 +25,6 @@ import org.craigmcc.bookcase.exception.NotFound;
 import org.craigmcc.bookcase.exception.NotUnique;
 import org.craigmcc.bookcase.model.Author;
 
-import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
@@ -34,16 +33,14 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.RollbackException;
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 import static org.craigmcc.bookcase.model.Constants.AUTHOR_NAME;
 import static org.craigmcc.bookcase.model.Constants.FIRST_NAME_COLUMN;
@@ -53,7 +50,7 @@ import static org.craigmcc.library.model.Constants.ID_COLUMN;
 
 @LocalBean
 @Stateless
-public class AuthorService implements Service<Author> {
+public class AuthorService extends Service<Author> {
 
     // Instance Variables ----------------------------------------------------
 
@@ -104,8 +101,8 @@ public class AuthorService implements Service<Author> {
         try {
 
             TypedQuery<Author> query = entityManager.createNamedQuery
-                    (AUTHOR_NAME + ".findById", Author.class);
-            query.setParameter(ID_COLUMN, id);
+                    (AUTHOR_NAME + ".findById", Author.class)
+                    .setParameter(ID_COLUMN, id);
             Author result = query.getSingleResult();
             return result;
 
@@ -146,9 +143,9 @@ public class AuthorService implements Service<Author> {
             }
 
             TypedQuery<Author> query = entityManager.createNamedQuery
-                    (AUTHOR_NAME + ".findByName", Author.class);
-            query.setParameter(FIRST_NAME_COLUMN, firstName);
-            query.setParameter(LAST_NAME_COLUMN, lastName);
+                    (AUTHOR_NAME + ".findByName", Author.class)
+                    .setParameter(FIRST_NAME_COLUMN, firstName)
+                    .setParameter(LAST_NAME_COLUMN, lastName);
             List<Author> result = query.getResultList();
             return result;
 
@@ -162,12 +159,6 @@ public class AuthorService implements Service<Author> {
     public Author insert(@NotNull Author author) throws BadRequest, InternalServerError, NotUnique {
 
         try {
-
-            // Precheck validation constraints
-            Set<ConstraintViolation<Author>> violations = validator.validate(author);
-            if (!violations.isEmpty()) {
-                throw new ConstraintViolationException(violations);
-            }
 
             // Precheck uniqueness constraint
             TypedQuery<Author> authorQuery = entityManager.createNamedQuery
@@ -184,37 +175,33 @@ public class AuthorService implements Service<Author> {
             author.setPublished(LocalDateTime.now());
             author.setUpdated(author.getPublished());
             entityManager.persist(author);
+            entityManager.flush();
+            entityManager.detach(author);
             insertedAuthorEvent.fire(new InsertedModelEvent(author));
             return author;
 
         } catch (ConstraintViolationException e) {
-            throw new BadRequest(e.getMessage()); // TODO - format message?
+            throw new BadRequest(formatMessage(e));
         } catch (EntityExistsException e) {
             throw new NotUnique(NAME_UNIQUE_VALIDATION_MESSAGE);
         } catch (NotUnique e) {
             throw e;
-        } catch (RollbackException | EJBTransactionRolledbackException e) {
-            if ((e != null) && (e.getCause() instanceof ConstraintViolationException)) {
-                throw new BadRequest(e.getCause().getMessage()); // TODO - format message?
-            } else {
-                throw new BadRequest(e.getMessage());
-            }
+        } catch (PersistenceException e) {
+            handlePersistenceException(e);
         } catch (Exception e) {
             throw new InternalServerError(e.getMessage(), e);
         }
+
+        return author;
 
     }
 
     @Override
     public Author update(@NotNull Author author) throws BadRequest, InternalServerError, NotFound, NotUnique {
 
-        try {
+        Author original = null;
 
-            // Precheck validation constraints
-            Set<ConstraintViolation<Author>> violations = validator.validate(author);
-            if (!violations.isEmpty()) {
-                throw new ConstraintViolationException(violations);
-            }
+        try {
 
             // Precheck uniqueness constraint
             TypedQuery<Author> authorQuery = entityManager.createNamedQuery
@@ -231,30 +218,33 @@ public class AuthorService implements Service<Author> {
             }
 
             // Perform the requested update
-            Author original = find(author.getId());
+            original = find(author.getId());
             original.copy(author);
             original.setUpdated(LocalDateTime.now());
             entityManager.merge(original);
+            entityManager.flush();
+            entityManager.detach(original);
             updatedAuthorEvent.fire(new UpdatedModelEvent(original));
-            return original;
 
         } catch (ConstraintViolationException e) {
-            throw new BadRequest(e.getMessage()); // TODO - format message?
+            throw new BadRequest(formatMessage(e));
+        } catch (EntityExistsException e) {
+            throw new NotUnique(NAME_UNIQUE_VALIDATION_MESSAGE);
         } catch (InternalServerError e) {
             throw e;
         } catch (NotFound e) {
             throw e;
         } catch (NotUnique e) {
             throw e;
-        } catch (RollbackException | EJBTransactionRolledbackException e) {
-            if ((e != null) && (e.getCause() instanceof ConstraintViolationException)) {
-                throw new BadRequest(e.getCause().getMessage()); // TODO - format message?
-            } else {
-                throw new BadRequest(e.getMessage());
-            }
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+            handlePersistenceException(e);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new InternalServerError(e.getMessage(), e);
         }
+
+        return original;
 
     }
 

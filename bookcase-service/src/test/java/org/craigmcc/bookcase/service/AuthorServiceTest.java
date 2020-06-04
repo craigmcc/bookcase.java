@@ -223,7 +223,7 @@ public class AuthorServiceTest extends AbstractServiceTest {
     @Test
     public void insertNotUnique() throws Exception {
 
-        Author author = findFirstAuthorByName("Rubble");
+        Author author = new Author("Barney", "Rubble", "New notes about Barney");
         author.setId(null);
         assertThrows(NotUnique.class,
                 () -> authorService.insert(author));

@@ -22,14 +22,19 @@ import org.craigmcc.bookcase.exception.NotUnique;
 import org.craigmcc.library.model.Model;
 
 import javax.persistence.EntityExistsException;
+import javax.persistence.PersistenceException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * <p>Base interface for persistent storage of {@link Model} objects, and related
+ * <p>Abstract base class for persistent storage of {@link Model} objects, and related
  * functional logic.</p>
  */
-public interface Service<M extends Model> {
+public abstract class Service<M extends Model> {
+
+    // Public Methods --------------------------------------------------------
 
     /**
      * <p>Delete the specified {@link Model} object by identifier.
@@ -42,7 +47,7 @@ public interface Service<M extends Model> {
      * @throws InternalServerError If a JPA level error has occurred.
      * @throws NotFound If no object with the specified primary key can be found.
      */
-    M delete(@NotNull M model) throws InternalServerError, NotFound;
+    public abstract @NotNull M delete(@NotNull M model) throws InternalServerError, NotFound;
 
     /**
      * <p>Retrieve and return the specified {@link Model} object by identifier.</p>
@@ -54,7 +59,7 @@ public interface Service<M extends Model> {
      * @throws InternalServerError If a JPA level error has occurred.
      * @throws NotFound If no object with the specified primary key can be found.
      */
-    @NotNull M find(@NotNull Long id) throws InternalServerError, NotFound;
+    public abstract @NotNull M find(@NotNull Long id) throws InternalServerError, NotFound;
 
     /**
      * <p>Retrieve and return all {@link Model} objects of the specified type.</p>
@@ -63,7 +68,7 @@ public interface Service<M extends Model> {
      *
      * @throws InternalServerError If a JPA level error has occurred.
      */
-    @NotNull List<M> findAll() throws InternalServerError;
+    public abstract @NotNull List<M> findAll() throws InternalServerError;
 
     /**
      * <p>Insert and return the specified {@link Model} object.</p>
@@ -76,7 +81,7 @@ public interface Service<M extends Model> {
      * @throws InternalServerError If a JPA level error has occurred.
      * @throws NotUnique If a JPA {@link EntityExistsException} occurs.
      */
-    @NotNull M insert(@NotNull M model) throws BadRequest, InternalServerError, NotUnique;
+    public abstract @NotNull M insert(@NotNull M model) throws BadRequest, InternalServerError, NotUnique;
 
     /**
      * <p>Update and return the specified {@link Model} object.</p>
@@ -90,6 +95,29 @@ public interface Service<M extends Model> {
      * @throws NotFound If no object with the specified primary key can be found.
      * @throws NotUnique If a JPA {@link EntityExistsException} occurs.
      */
-    @NotNull M update(@NotNull M model) throws BadRequest, InternalServerError, NotFound, NotUnique;
+    public abstract @NotNull M update(@NotNull M model) throws BadRequest, InternalServerError, NotFound, NotUnique;
+
+    // Protected Methods -----------------------------------------------------
+
+    protected String formatMessage(ConstraintViolationException e) {
+        StringBuffer sb = new StringBuffer();
+        for (ConstraintViolation constraintViolation : e.getConstraintViolations()) {
+            if (sb.length() > 0) {
+                sb.append(", ");
+            }
+            sb.append(constraintViolation.getMessage());
+        }
+        return sb.toString();
+    }
+
+    protected void handlePersistenceException(@NotNull PersistenceException e) throws BadRequest, InternalServerError {
+        if ((e.getCause() != null) && (e.getCause() instanceof ConstraintViolationException)) {
+            throw new BadRequest(formatMessage((ConstraintViolationException) e.getCause()));
+        } else if (e.getCause() != null) {
+            throw new BadRequest("foreignKey: Foreign key or unique key constraint violated");
+        } else {
+            throw new InternalServerError(e);
+        }
+    }
 
 }

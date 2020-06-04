@@ -52,7 +52,7 @@ import static org.craigmcc.library.model.Constants.ID_COLUMN;
 
 @LocalBean
 @Stateless
-public class AnthologyService implements Service<Anthology> {
+public class AnthologyService extends Service<Anthology> {
 
     // Instance Variables ----------------------------------------------------
 

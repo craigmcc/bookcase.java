@@ -32,7 +32,7 @@ public class InternalServerError extends Exception {
     }
 
     public InternalServerError(Throwable cause) {
-        super(cause);
+        super(cause.getMessage(), cause);
     }
 
 }

@@ -15,7 +15,6 @@
  */
 package org.craigmcc.bookcase.event;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -65,7 +64,7 @@ public class MutatedModelEvent extends Model<MutatedModelEvent> {
             nullable = false
     )
     @Schema(description = "Type of mutation documented by this event.")
-    @NotBlank(message = "type: Required and must not be blank")
+//    @NotBlank(message = "type: Required and must not be blank")
     @ValidEventType
     private MutatedModelEvent.Type type;
 
@@ -83,6 +82,16 @@ public class MutatedModelEvent extends Model<MutatedModelEvent> {
             @NotNull Type type
     ) {
         this.model = model.toString();  // TODO - serialized format?
+        this.type = type;
+        setPublished(LocalDateTime.now());
+        setUpdated(getPublished());
+    }
+
+    public MutatedModelEvent(
+            @NotNull String model,      // TODO - serialized format?
+            @NotNull Type type
+    ) {
+        this.model = model;
         this.type = type;
         setPublished(LocalDateTime.now());
         setUpdated(getPublished());

@@ -52,7 +52,7 @@ import static org.craigmcc.library.model.Constants.ID_COLUMN;
 
 @LocalBean
 @Stateless
-public class SeriesService implements Service<Series> {
+public class SeriesService extends Service<Series> {
 
     // Instance Variables ----------------------------------------------------
 

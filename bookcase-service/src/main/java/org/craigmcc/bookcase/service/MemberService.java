@@ -54,7 +54,7 @@ import static org.craigmcc.library.model.Constants.ID_COLUMN;
 
 @LocalBean
 @Stateless
-public class MemberService implements Service<Member> {
+public class MemberService extends Service<Member> {
 
     // Instance Variables ----------------------------------------------------
 

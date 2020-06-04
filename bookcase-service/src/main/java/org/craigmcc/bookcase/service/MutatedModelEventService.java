@@ -97,9 +97,11 @@ public class MutatedModelEventService {
     // Private Methods -------------------------------------------------------
 
     private void handleMutatedModel(MutatedModelEvent mutatedModelEvent) {
-        mutatedModelEvent.setPublished(LocalDateTime.now());
-        mutatedModelEvent.setUpdated((mutatedModelEvent.getPublished()));
-        entityManager.persist(mutatedModelEvent);
+        MutatedModelEvent event = new MutatedModelEvent(
+                mutatedModelEvent.getModel(), mutatedModelEvent.getType());
+        event.setPublished(LocalDateTime.now());
+        event.setUpdated((event.getPublished()));
+        entityManager.persist(event);
     }
 
 }
