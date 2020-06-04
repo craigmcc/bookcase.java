@@ -62,6 +62,13 @@
             <scope>test</scope> <!-- Used in tests only -->
         </dependency>
 
+        <!-- Bookcase: Shared Module -->
+        <dependency>
+            <groupId>org.craigmcc.bookcase</groupId>
+            <artifactId>bookcase-shared</artifactId>
+            <version>${bookcase-shared.version}</version>
+        </dependency>
+
         <!-- Hamcrest Matchers for tests -->
         <dependency>
             <groupId>org.hamcrest</groupId>

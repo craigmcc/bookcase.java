@@ -103,11 +103,11 @@
             <version>${bookcase-model.version}</version>
         </dependency>
 
-        <!-- Personal Library:  Model Classes -->
+        <!-- Bookcase: Shared Module -->
         <dependency>
-            <groupId>org.craigmcc.library</groupId>
-            <artifactId>model-jpa</artifactId>
-            <version>${model-jpa.version}</version>
+            <groupId>org.craigmcc.bookcase</groupId>
+            <artifactId>bookcase-shared</artifactId>
+            <version>${bookcase-shared.version}</version>
         </dependency>
 
         <!-- Microprofile Config APIs -->
