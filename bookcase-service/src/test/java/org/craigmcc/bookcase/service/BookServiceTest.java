@@ -116,7 +116,7 @@ public class BookServiceTest extends AbstractServiceTest {
 */
 
             // Delete and verify we can no longer retrieve it
-            bookService.delete(book);
+            bookService.delete(book.getId());
             assertThat(findBookById(book.getId()).isPresent(), is(false));
 
             // Delete should have cascaded to members and stories
@@ -191,16 +191,6 @@ public class BookServiceTest extends AbstractServiceTest {
 
         // Completely empty instance
         final Book book0 = new Book();
-/*
-        System.out.println(">>>>> Inserting book " + book0);
-        try {
-            bookService.insert(book0);
-        } catch (Exception e) {
-            System.out.println(">>>>> Exception: " + e.getClass().getName());
-            System.out.println(">>>>> Message:   " + e.getMessage());
-            e.printStackTrace();
-        }
-*/
         assertThrows(BadRequest.class,
                 () -> bookService.insert(book0));
 

@@ -54,9 +54,6 @@ public abstract class AbstractServiceTest {
                 "org.apache.commons.lang3"
         );
         archive.addPackages(true,
-//                RollbackException.class.getPackage(),      // javax.persistence
-//                UserTransaction.class.getPackage(),        // javax.transaction
-//                ConstraintViolationException.class.getPackage(), // javax.validation
                 MutatedModelEventTypeConverter.class.getPackage(), // org.craigmcc.bookcase.event.converter
                 EventTypeValidator.class.getPackage(),     // org.craigmcc.bookcase.event.validator
                 Constants.class.getPackage(),              // org.craigmcc.bookcase.model

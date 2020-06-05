@@ -67,7 +67,8 @@ public class AuthorEndpoints {
     // Endpoint Methods ------------------------------------------------------
 
     @DELETE
-    @Operation(description = "Delete existing author.")
+    @Path("/{authorId}")
+    @Operation(description = "Delete author by ID.")
     @APIResponses(value = {
             @APIResponse(
                     content = @Content(schema = @Schema(implementation = Author.class)),
@@ -87,15 +88,11 @@ public class AuthorEndpoints {
     })
     @Counted
     public Response delete(
-            @Parameter(
-                    description = "Author to be deleted.",
-                    name = "author",
-                    schema = @Schema(implementation = Author.class)
-            )
-                    Author author
+            @Parameter(description = "ID of author to delete.")
+            @PathParam("authorId") Long authorId
     ) {
         try {
-            author = authorService.delete(author);
+            Author author = authorService.delete(authorId);
             return Response.ok(author).build();
         } catch (InternalServerError e) {
             LOG.log(SEVERE, e.getMessage(), e);
@@ -113,7 +110,7 @@ public class AuthorEndpoints {
 
     @GET
     @Path("/{authorId}")
-    @Operation(description = "Find Author by id.")
+    @Operation(description = "Find author by ID.")
     @APIResponses(value = {
             @APIResponse(
                     content = @Content(schema = @Schema(implementation = Author.class)),
@@ -133,7 +130,7 @@ public class AuthorEndpoints {
     })
     @Counted
     public Response find(
-            @Parameter(description = "ID of Author to find.")
+            @Parameter(description = "ID of author to find.")
             @PathParam("authorId") Long authorId
     ) {
         try {

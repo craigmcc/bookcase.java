@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.craigmcc.bookcase.service;
+package org.craigmcc.bookcase.client;
 
 import org.craigmcc.bookcase.exception.BadRequest;
 import org.craigmcc.bookcase.exception.InternalServerError;
@@ -21,18 +21,28 @@ import org.craigmcc.bookcase.exception.NotFound;
 import org.craigmcc.bookcase.exception.NotUnique;
 import org.craigmcc.library.model.Model;
 
-import javax.persistence.EntityExistsException;
-import javax.persistence.PersistenceException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
- * <p>Abstract base class for persistent storage of {@link Model} objects, and related
- * functional logic.</p>
+ * <p>Standard CRUD interface methods for interacting with REST services that
+ * implement <code>org.craigmcc.bookcase.service.Service</code>.  Any changes to
+ * that public API should be synchronized here.</p>
+ *
+ * @param <M> Model class for the service this client is interacting with
  */
-public abstract class Service<M extends Model> {
+public abstract class AbstractServiceClient<M extends Model> extends AbstractClient {
+
+    // Manifest Constants ----------------------------------------------------
+
+    // WebTarget path elements (relative to getBaseTarget()) for various model clients
+    public static final String ANTHOLOGY_PATH = "anthologies";
+    public static final String AUTHOR_PATH = "authors";
+    public static final String BOOK_PATH = "books";
+    public static final String MEMBER_PATH = "members";
+    public static final String SERIES_PATH = "series";
+    public static final String STORY_PATH = "stories";
 
     // Public Methods --------------------------------------------------------
 
@@ -40,7 +50,7 @@ public abstract class Service<M extends Model> {
      * <p>Delete the specified {@link Model} object by identifier.
      * This may cause cascading deletes based on object relationships.</p>
      *
-     * @param id Parimary key of the specified {@link Model} object.
+     * @param id Primary key of the specified {@link Model} object.
      *
      * @return The deleted {@link Model} object.
      *
@@ -96,28 +106,5 @@ public abstract class Service<M extends Model> {
      * @throws NotUnique If a uniqueness constraint has been violated.
      */
     public abstract @NotNull M update(@NotNull M model) throws BadRequest, InternalServerError, NotFound, NotUnique;
-
-    // Protected Methods -----------------------------------------------------
-
-    protected String formatMessage(ConstraintViolationException e) {
-        StringBuffer sb = new StringBuffer();
-        for (ConstraintViolation constraintViolation : e.getConstraintViolations()) {
-            if (sb.length() > 0) {
-                sb.append(", ");
-            }
-            sb.append(constraintViolation.getMessage());
-        }
-        return sb.toString();
-    }
-
-    protected void handlePersistenceException(@NotNull PersistenceException e) throws BadRequest, InternalServerError {
-        if ((e.getCause() != null) && (e.getCause() instanceof ConstraintViolationException)) {
-            throw new BadRequest(formatMessage((ConstraintViolationException) e.getCause()));
-        } else if (e.getCause() != null) {
-            throw new BadRequest("foreignKey: Foreign key or unique key constraint violated");
-        } else {
-            throw new InternalServerError(e);
-        }
-    }
 
 }

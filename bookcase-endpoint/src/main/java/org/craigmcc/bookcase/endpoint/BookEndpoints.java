@@ -67,7 +67,8 @@ public class BookEndpoints {
     // Endpoint Methods ------------------------------------------------------
 
     @DELETE
-    @Operation(description = "Delete existing book.")
+    @Path("/{bookId}")
+    @Operation(description = "Delete book by ID.")
     @APIResponses(value = {
             @APIResponse(
                     content = @Content(schema = @Schema(implementation = Book.class)),
@@ -87,15 +88,11 @@ public class BookEndpoints {
     })
     @Counted
     public Response delete(
-            @Parameter(
-                    description = "Book to be deleted.",
-                    name = "book",
-                    schema = @Schema(implementation = Book.class)
-            )
-                    Book book
+            @Parameter(description = "ID of book to delete.")
+            @PathParam("bookId") Long bookId
     ) {
         try {
-            book = bookService.delete(book);
+            Book book = bookService.delete(bookId);
             return Response.ok(book).build();
         } catch (InternalServerError e) {
             LOG.log(SEVERE, e.getMessage(), e);
@@ -113,7 +110,7 @@ public class BookEndpoints {
 
     @GET
     @Path("/{bookId}")
-    @Operation(description = "Find book by id.")
+    @Operation(description = "Find book by ID.")
     @APIResponses(value = {
             @APIResponse(
                     content = @Content(schema = @Schema(implementation = Book.class)),
@@ -133,7 +130,7 @@ public class BookEndpoints {
     })
     @Counted
     public Response find(
-            @Parameter(description = "ID of Book to find.")
+            @Parameter(description = "ID of book to find.")
             @PathParam("bookId") Long bookId
     ) {
         try {

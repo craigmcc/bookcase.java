@@ -67,7 +67,8 @@ public class AnthologyEndpoints {
     // Endpoint Methods ------------------------------------------------------
 
     @DELETE
-    @Operation(description = "Delete existing anthology.")
+    @Path("/{anthologyId}")
+    @Operation(description = "Delete anthology by ID.")
     @APIResponses(value = {
             @APIResponse(
                     content = @Content(schema = @Schema(implementation = Anthology.class)),
@@ -87,15 +88,11 @@ public class AnthologyEndpoints {
     })
     @Counted
     public Response delete(
-            @Parameter(
-                    description = "Anthology to be deleted.",
-                    name = "anthology",
-                    schema = @Schema(implementation = Anthology.class)
-            )
-            Anthology anthology
+            @Parameter(description = "ID of anthology to delete.")
+            @PathParam("anthologyId") Long anthologyId
     ) {
         try {
-            anthology = anthologyService.delete(anthology);
+            Anthology anthology = anthologyService.delete(anthologyId);
             return Response.ok(anthology).build();
         } catch (InternalServerError e) {
             LOG.log(SEVERE, e.getMessage(), e);
@@ -113,7 +110,7 @@ public class AnthologyEndpoints {
 
     @GET
     @Path("/{anthologyId}")
-    @Operation(description = "Find anthology by id.")
+    @Operation(description = "Find anthology by ID.")
     @APIResponses(value = {
             @APIResponse(
                     content = @Content(schema = @Schema(implementation = Anthology.class)),

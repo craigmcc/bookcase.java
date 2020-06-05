@@ -107,7 +107,7 @@ public class AnthologyServiceTest extends AbstractServiceTest {
             assertThat(stories.size(), greaterThan(0));
 
             // Delete and verify we can no longer retrieve it
-            anthologyService.delete(anthology);
+            anthologyService.delete(anthology.getId());
             assertThat(findAnthologyById(anthology.getId()).isPresent(), is(false));
 
             // Delete should have cascaded to stories
@@ -249,7 +249,7 @@ public class AnthologyServiceTest extends AbstractServiceTest {
 
         // Completely empty instance
         final Anthology anthology0 = new Anthology();
-        assertThrows(BadRequest.class,
+        assertThrows(NotFound.class,
                 () -> anthologyService.update(anthology0));
 
         // Missing authorId field
@@ -293,8 +293,8 @@ public class AnthologyServiceTest extends AbstractServiceTest {
 
     private Optional<Anthology> findAnthologyById(Long anthologyId) {
         TypedQuery<Anthology> query = entityManager.createNamedQuery
-                (ANTHOLOGY_NAME + ".findById", Anthology.class);
-        query.setParameter(ID_COLUMN, anthologyId);
+                (ANTHOLOGY_NAME + ".findById", Anthology.class)
+                .setParameter(ID_COLUMN, anthologyId);
         try {
             return Optional.of(query.getSingleResult());
         } catch (NoResultException e) {
@@ -304,8 +304,8 @@ public class AnthologyServiceTest extends AbstractServiceTest {
 
     private List<Anthology> findAnthologiesByTitle(String title) {
         TypedQuery<Anthology> query = entityManager.createNamedQuery
-                (ANTHOLOGY_NAME + ".findByTitle", Anthology.class);
-        query.setParameter(TITLE_COLUMN, title);
+                (ANTHOLOGY_NAME + ".findByTitle", Anthology.class)
+                .setParameter(TITLE_COLUMN, title);
         return query.getResultList();
     }
 
@@ -317,8 +317,8 @@ public class AnthologyServiceTest extends AbstractServiceTest {
 
     private List<Story> findStoriesByAnthologyId(Long anthologyId) {
         TypedQuery<Story> query = entityManager.createNamedQuery
-                (STORY_NAME + ".findByAnthologyId", Story.class);
-        query.setParameter(ANTHOLOGY_ID_COLUMN, anthologyId);
+                (STORY_NAME + ".findByAnthologyId", Story.class)
+                .setParameter(ANTHOLOGY_ID_COLUMN, anthologyId);
         return query.getResultList();
     }
 

@@ -108,7 +108,7 @@ public class SeriesServiceTest extends AbstractServiceTest {
 */
 
             // Delete and verify we can no longer retrieve it
-            seriesService.delete(series);
+            seriesService.delete(series.getId());
             assertThat(findSeriesById(series.getId()).isPresent(), is(false));
 
             // Delete should have cascaded to members
@@ -250,7 +250,7 @@ public class SeriesServiceTest extends AbstractServiceTest {
 
         // Completely empty instance
         final Series series0 = new Series();
-        assertThrows(BadRequest.class,
+        assertThrows(NotFound.class,
                 () -> seriesService.update(series0));
 
         // Missing authorId field
@@ -300,15 +300,15 @@ public class SeriesServiceTest extends AbstractServiceTest {
 
     private List<Member> findMembersBySeriesId(Long SeriesId) {
         TypedQuery<Member> query = entityManager.createNamedQuery
-                (MEMBER_NAME + ".findBySeriesId", Member.class);
-        query.setParameter(SERIES_ID_COLUMN, SeriesId);
+                (MEMBER_NAME + ".findBySeriesId", Member.class)
+                .setParameter(SERIES_ID_COLUMN, SeriesId);
         return query.getResultList();
     }
 
     private Optional<Series> findSeriesById(Long SeriesId) {
         TypedQuery<Series> query = entityManager.createNamedQuery
-                (SERIES_NAME + ".findById", Series.class);
-        query.setParameter(ID_COLUMN, SeriesId);
+                (SERIES_NAME + ".findById", Series.class)
+                .setParameter(ID_COLUMN, SeriesId);
         try {
             return Optional.of(query.getSingleResult());
         } catch (NoResultException e) {
@@ -318,8 +318,8 @@ public class SeriesServiceTest extends AbstractServiceTest {
 
     private List<Series> findSeriesByTitle(String title) {
         TypedQuery<Series> query = entityManager.createNamedQuery
-                (SERIES_NAME + ".findByTitle", Series.class);
-        query.setParameter(TITLE_COLUMN, title);
+                (SERIES_NAME + ".findByTitle", Series.class)
+                .setParameter(TITLE_COLUMN, title);
         return query.getResultList();
     }
 

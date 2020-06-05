@@ -36,6 +36,7 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 import javax.validation.ConstraintViolation;
@@ -73,17 +74,14 @@ public class StoryService extends Service<Story> {
     @ForStory
     private Event<UpdatedModelEvent> updatedStoryEvent;
 
-    @Inject
-    private Validator validator;
-
     // Public Methods --------------------------------------------------------
 
     @Override
-    public Story delete(@NotNull Story story) throws InternalServerError, NotFound {
+    public @NotNull Story delete(@NotNull Long id) throws InternalServerError, NotFound {
 
         try {
 
-            Story deleted = entityManager.find(Story.class, story.getId());
+            Story deleted = entityManager.find(Story.class, id);
             if (deleted != null) {
                 entityManager.remove(deleted);
                 deleted.setUpdated(LocalDateTime.now());
@@ -95,7 +93,7 @@ public class StoryService extends Service<Story> {
             throw new InternalServerError(e.getMessage(), e);
         }
 
-        throw new NotFound(String.format("id: Missing story %d", story.getId()));
+        throw new NotFound(String.format("id: Missing story %d", id));
 
     }
 
@@ -105,8 +103,8 @@ public class StoryService extends Service<Story> {
         try {
 
             TypedQuery<Story> query = entityManager.createNamedQuery
-                    (STORY_NAME + ".findById", Story.class);
-            query.setParameter(ID_COLUMN, id);
+                    (STORY_NAME + ".findById", Story.class)
+                    .setParameter(ID_COLUMN, id);
             Story result = query.getSingleResult();
             return result;
 
@@ -140,8 +138,8 @@ public class StoryService extends Service<Story> {
         try {
 
             TypedQuery<Story> query = entityManager.createNamedQuery
-                    (STORY_NAME + ".findByAnthologyId", Story.class);
-            query.setParameter(ANTHOLOGY_ID_COLUMN, anthologyId);
+                    (STORY_NAME + ".findByAnthologyId", Story.class)
+                    .setParameter(ANTHOLOGY_ID_COLUMN, anthologyId);
             List<Story> result = query.getResultList();
             return result;
 
@@ -152,132 +150,56 @@ public class StoryService extends Service<Story> {
     }
 
     @Override
-    public Story insert(@NotNull Story story) throws BadRequest, InternalServerError, NotUnique {
+    public @NotNull Story insert(@NotNull Story story) throws BadRequest, InternalServerError, NotUnique {
 
         try {
 
-            // Precheck validation constraints
-            Set<ConstraintViolation<Story>> violations = validator.validate(story);
-            if (!violations.isEmpty()) {
-                throw new ConstraintViolationException(violations);
-            }
-
-            // Precheck anthologyId foreign key constraint
-            TypedQuery<Anthology> anthologyQuery = entityManager.createNamedQuery
-                    (ANTHOLOGY_NAME + ".findById", Anthology.class);
-            anthologyQuery.setParameter(ID_COLUMN, story.getAnthologyId());
-            try {
-                anthologyQuery.getSingleResult();
-            } catch (NoResultException e) {
-                throw new BadRequest(String.format("anthologyId: Missing anthology %d", story.getAnthologyId()));
-            } catch (Exception e) {
-                throw new InternalServerError
-                        (String.format("seriesId: Error checking for anthology %d", story.getAnthologyId()), e);
-            }
-
-            // Precheck bookId foreign key constraint
-            TypedQuery<Book> bookQuery = entityManager.createNamedQuery
-                    (BOOK_NAME + ".findById", Book.class);
-            bookQuery.setParameter(ID_COLUMN, story.getBookId());
-            try {
-                bookQuery.getSingleResult();
-            } catch (NoResultException e) {
-                throw new BadRequest(String.format("bookId: Missing book %d", story.getBookId()));
-            } catch (Exception e) {
-                throw new InternalServerError
-                        (String.format("bookId: Error checking for book %d", story.getBookId()), e);
-            }
-
-            // Perform the requested insert
             story.setId(null); // Ignore any existing primary key
             story.setPublished(LocalDateTime.now());
             story.setUpdated(story.getPublished());
             entityManager.persist(story);
+            entityManager.flush();
             insertedStoryEvent.fire(new InsertedModelEvent(story));
-            return story;
 
-        } catch (BadRequest e) {
-            throw e;
         } catch (ConstraintViolationException e) {
-            throw new BadRequest(e.getMessage()); // TODO - format message?
-        } catch (EntityExistsException e) {
-            throw new NotUnique(String.format("Non-unique insert attempted for %s", story.toString()));
-        } catch (InternalServerError e) {
-            throw e;
-        } catch (RollbackException | EJBTransactionRolledbackException e) {
-            if ((e != null) && (e.getCause() instanceof ConstraintViolationException)) {
-                throw new BadRequest(e.getCause().getMessage()); // TODO - format message?
-            } else {
-                throw new BadRequest(e.getMessage());
-            }
+            throw new BadRequest(formatMessage(e));
+        } catch (PersistenceException e) {
+            handlePersistenceException(e);
         } catch (Exception e) {
             throw new InternalServerError(e.getMessage(), e);
         }
+
+        return story;
 
     }
 
     @Override
-    public Story update(@NotNull Story story) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Story update(@NotNull Story story) throws BadRequest, InternalServerError, NotFound, NotUnique {
+
+        Story original = null;
 
         try {
 
-            // Precheck validation constraints
-            Set<ConstraintViolation<Story>> violations = validator.validate(story);
-            if (!violations.isEmpty()) {
-                throw new ConstraintViolationException(violations);
-            }
-
-            // Precheck anthologyId foreign key constraint
-            TypedQuery<Anthology> anthologyQuery = entityManager.createNamedQuery
-                    (ANTHOLOGY_NAME + ".findById", Anthology.class);
-            anthologyQuery.setParameter(ID_COLUMN, story.getAnthologyId());
-            try {
-                anthologyQuery.getSingleResult();
-            } catch (NoResultException e) {
-                throw new BadRequest(String.format("anthologyId: Missing anthology %d", story.getAnthologyId()));
-            } catch (Exception e) {
-                throw new InternalServerError
-                        (String.format("seriesId: Error checking for anthology %d", story.getAnthologyId()), e);
-            }
-
-            // Precheck bookId foreign key constraint
-            TypedQuery<Book> bookQuery = entityManager.createNamedQuery
-                    (BOOK_NAME + ".findById", Book.class);
-            bookQuery.setParameter(ID_COLUMN, story.getBookId());
-            try {
-                bookQuery.getSingleResult();
-            } catch (NoResultException e) {
-                throw new BadRequest(String.format("bookId: Missing book %d", story.getBookId()));
-            } catch (Exception e) {
-                throw new InternalServerError
-                        (String.format("bookId: Error checking for book %d", story.getBookId()), e);
-            }
-
-            // Perform the requested update
-            Story original = find(story.getId());
+            original = find(story.getId());
             original.copy(story);
             original.setUpdated(LocalDateTime.now());
             entityManager.merge(original);
+            entityManager.flush();
             updatedStoryEvent.fire(new UpdatedModelEvent(original));
-            return original;
 
-        } catch (BadRequest e) {
-            throw e;
         } catch (ConstraintViolationException e) {
-            throw new BadRequest(e.getMessage()); // TODO - format message?
+            throw new BadRequest(formatMessage(e));
         } catch (InternalServerError e) {
             throw e;
         } catch (NotFound e) {
             throw e;
-        } catch (RollbackException | EJBTransactionRolledbackException e) {
-            if ((e != null) && (e.getCause() instanceof ConstraintViolationException)) {
-                throw new BadRequest(e.getCause().getMessage()); // TODO - format message?
-            } else {
-                throw new BadRequest(e.getMessage());
-            }
+        } catch (PersistenceException e) {
+            handlePersistenceException(e);
         } catch (Exception e) {
             throw new InternalServerError(e.getMessage(), e);
         }
+
+        return original;
 
     }
 

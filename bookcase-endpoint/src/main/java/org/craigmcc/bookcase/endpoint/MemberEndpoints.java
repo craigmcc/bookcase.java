@@ -67,7 +67,8 @@ public class MemberEndpoints {
     // Endpoint Methods ------------------------------------------------------
 
     @DELETE
-    @Operation(description = "Delete existing member.")
+    @Path("/{memberId}")
+    @Operation(description = "Delete member by ID.")
     @APIResponses(value = {
             @APIResponse(
                     content = @Content(schema = @Schema(implementation = Member.class)),
@@ -87,15 +88,11 @@ public class MemberEndpoints {
     })
     @Counted
     public Response delete(
-            @Parameter(
-                    description = "Member to be deleted.",
-                    name = "member",
-                    schema = @Schema(implementation = Member.class)
-            )
-                    Member member
+            @Parameter(description = "ID of member to delete.")
+            @PathParam("memberId") Long memberId
     ) {
         try {
-            member = memberService.delete(member);
+            Member member = memberService.delete(memberId);
             return Response.ok(member).build();
         } catch (InternalServerError e) {
             LOG.log(SEVERE, e.getMessage(), e);
@@ -113,7 +110,7 @@ public class MemberEndpoints {
 
     @GET
     @Path("/{memberId}")
-    @Operation(description = "Find member by id.")
+    @Operation(description = "Find member by ID.")
     @APIResponses(value = {
             @APIResponse(
                     content = @Content(schema = @Schema(implementation = Member.class)),

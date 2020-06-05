@@ -67,7 +67,8 @@ public class SeriesEndpoints {
     // Endpoint Methods ------------------------------------------------------
 
     @DELETE
-    @Operation(description = "Delete existing series.")
+    @Path("/{seriesId}")
+    @Operation(description = "Delete series by ID.")
     @APIResponses(value = {
             @APIResponse(
                     content = @Content(schema = @Schema(implementation = Series.class)),
@@ -87,15 +88,11 @@ public class SeriesEndpoints {
     })
     @Counted
     public Response delete(
-            @Parameter(
-                    description = "Series to be deleted.",
-                    name = "series",
-                    schema = @Schema(implementation = Series.class)
-            )
-                    Series series
+            @Parameter(description = "ID of series to delete.")
+            @PathParam("seriesId") Long seriesId
     ) {
         try {
-            series = seriesService.delete(series);
+            Series series = seriesService.delete(seriesId);
             return Response.ok(series).build();
         } catch (InternalServerError e) {
             LOG.log(SEVERE, e.getMessage(), e);
@@ -113,7 +110,7 @@ public class SeriesEndpoints {
 
     @GET
     @Path("/{seriesId}")
-    @Operation(description = "Find series by id.")
+    @Operation(description = "Find series by ID.")
     @APIResponses(value = {
             @APIResponse(
                     content = @Content(schema = @Schema(implementation = Series.class)),

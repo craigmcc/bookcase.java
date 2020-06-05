@@ -24,29 +24,23 @@ import org.craigmcc.bookcase.exception.InternalServerError;
 import org.craigmcc.bookcase.exception.NotFound;
 import org.craigmcc.bookcase.exception.NotUnique;
 import org.craigmcc.bookcase.model.Anthology;
-import org.craigmcc.bookcase.model.Author;
 
-import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.RollbackException;
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 import static org.craigmcc.bookcase.model.Constants.ANTHOLOGY_NAME;
-import static org.craigmcc.bookcase.model.Constants.AUTHOR_NAME;
 import static org.craigmcc.bookcase.model.Constants.TITLE_COLUMN;
 import static org.craigmcc.library.model.Constants.ID_COLUMN;
 
@@ -77,11 +71,11 @@ public class AnthologyService extends Service<Anthology> {
     // Public Methods --------------------------------------------------------
 
     @Override
-    public Anthology delete(@NotNull Anthology anthology) throws InternalServerError, NotFound {
+    public @NotNull Anthology delete(@NotNull Long id) throws InternalServerError, NotFound {
 
         try {
 
-            Anthology deleted = entityManager.find(Anthology.class, anthology.getId());
+            Anthology deleted = entityManager.find(Anthology.class, id);
             if (deleted != null) {
                 entityManager.remove(deleted);
                 deleted.setUpdated(LocalDateTime.now());
@@ -93,7 +87,7 @@ public class AnthologyService extends Service<Anthology> {
             throw new InternalServerError(e.getMessage(), e);
         }
 
-        throw new NotFound(String.format("id: Missing anthology %d", anthology.getId()));
+        throw new NotFound(String.format("id: Missing anthology %d", id));
 
     }
 
@@ -103,8 +97,8 @@ public class AnthologyService extends Service<Anthology> {
         try {
 
             TypedQuery<Anthology> query = entityManager.createNamedQuery
-                    (ANTHOLOGY_NAME + ".findById", Anthology.class);
-            query.setParameter(ID_COLUMN, id);
+                    (ANTHOLOGY_NAME + ".findById", Anthology.class)
+                    .setParameter(ID_COLUMN, id);
             Anthology result = query.getSingleResult();
             return result;
 
@@ -138,8 +132,8 @@ public class AnthologyService extends Service<Anthology> {
         try {
 
             TypedQuery<Anthology> query = entityManager.createNamedQuery
-                    (ANTHOLOGY_NAME + ".findByTitle", Anthology.class);
-            query.setParameter(TITLE_COLUMN, title);
+                    (ANTHOLOGY_NAME + ".findByTitle", Anthology.class)
+                    .setParameter(TITLE_COLUMN, title);
             List<Anthology> result = query.getResultList();
             return result;
 
@@ -150,106 +144,56 @@ public class AnthologyService extends Service<Anthology> {
     }
 
     @Override
-    public Anthology insert(@NotNull Anthology anthology) throws BadRequest, InternalServerError, NotUnique {
+    public @NotNull Anthology insert(@NotNull Anthology anthology) throws BadRequest, InternalServerError, NotUnique {
 
         try {
 
-            // Precheck validation constraints
-            Set<ConstraintViolation<Anthology>> violations = validator.validate(anthology);
-            if (!violations.isEmpty()) {
-                throw new ConstraintViolationException(violations);
-            }
-
-            // Precheck authorId foreign key constraint
-            TypedQuery<Author> authorQuery = entityManager.createNamedQuery
-                    (AUTHOR_NAME + ".findById", Author.class);
-            authorQuery.setParameter(ID_COLUMN, anthology.getAuthorId());
-            try {
-                authorQuery.getSingleResult();
-            } catch (NoResultException e) {
-                throw new BadRequest(String.format("authorId: Missing author %d", anthology.getAuthorId()));
-            } catch (Exception e) {
-                throw new InternalServerError
-                        (String.format("authorId: Error checking for author %d", anthology.getAuthorId()), e);
-            }
-
-            // Perform the requested insert
             anthology.setId(null); // Ignore any existing primary key
             anthology.setPublished(LocalDateTime.now());
             anthology.setUpdated(anthology.getPublished());
             entityManager.persist(anthology);
+            entityManager.flush();
             insertedAnthologyEvent.fire(new InsertedModelEvent(anthology));
-            return anthology;
 
-        } catch (BadRequest e) {
-            throw e;
         } catch (ConstraintViolationException e) {
-            throw new BadRequest(e.getMessage()); // TODO - format message?
-        } catch (EntityExistsException e) {
-            throw new NotUnique(String.format("Non-unique insert attempted for %s", anthology.toString()));
-        } catch (InternalServerError e) {
-            throw e;
-        } catch (RollbackException | EJBTransactionRolledbackException e) {
-            if ((e != null) && (e.getCause() instanceof ConstraintViolationException)) {
-                throw new BadRequest(e.getCause().getMessage()); // TODO - format message?
-            } else {
-                throw new BadRequest(e.getMessage());
-            }
+            throw new BadRequest(formatMessage(e));
+        } catch (PersistenceException e) {
+            handlePersistenceException(e);
         } catch (Exception e) {
             throw new InternalServerError(e.getMessage(), e);
         }
+
+        return anthology;
 
     }
 
     @Override
-    public Anthology update(@NotNull Anthology anthology) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Anthology update(@NotNull Anthology anthology) throws BadRequest, InternalServerError, NotFound, NotUnique {
+
+        Anthology original = null;
 
         try {
 
-            // Precheck validation constraints
-            Set<ConstraintViolation<Anthology>> violations = validator.validate(anthology);
-            if (!violations.isEmpty()) {
-                throw new ConstraintViolationException(violations);
-            }
-
-            // Precheck authorId foreign key constraint
-            TypedQuery<Author> authorQuery = entityManager.createNamedQuery
-                    (AUTHOR_NAME + ".findById", Author.class);
-            authorQuery.setParameter(ID_COLUMN, anthology.getAuthorId());
-            try {
-                authorQuery.getSingleResult();
-            } catch (NoResultException e) {
-                throw new BadRequest(String.format("authorId: Missing author %d", anthology.getAuthorId()));
-            } catch (Exception e) {
-                throw new InternalServerError
-                        (String.format("authorId: Error checking for author %d", anthology.getAuthorId()), e);
-            }
-
-            // Perform the requested update
-            Anthology original = find(anthology.getId());
+            original = find(anthology.getId());
             original.copy(anthology);
             original.setUpdated(LocalDateTime.now());
             entityManager.merge(original);
+            entityManager.flush();
             updatedAnthologyEvent.fire(new UpdatedModelEvent(original));
-            return original;
 
-        } catch (BadRequest e) {
-            throw e;
         } catch (ConstraintViolationException e) {
-            throw new BadRequest(e.getMessage()); // TODO - format message?
+            throw new BadRequest(formatMessage(e));
         } catch (InternalServerError e) {
             throw e;
         } catch (NotFound e) {
             throw e;
-        } catch (RollbackException | EJBTransactionRolledbackException e) {
-            if ((e != null) && (e.getCause() instanceof ConstraintViolationException)) {
-                throw new BadRequest(e.getCause().getMessage()); // TODO - format message?
-            } else {
-                throw new BadRequest(e.getMessage());
-            }
+        } catch (PersistenceException e) {
+            handlePersistenceException(e);
         } catch (Exception e) {
             throw new InternalServerError(e.getMessage(), e);
         }
+
+        return original;
 
     }
 

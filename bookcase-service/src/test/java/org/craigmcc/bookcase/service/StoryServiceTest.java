@@ -100,7 +100,7 @@ public class StoryServiceTest extends AbstractServiceTest {
         for (Story story : stories) {
 
             // Delete and verify we can no longer retrieve it
-            storyService.delete(story);
+            storyService.delete(story.getId());
             assertThat(findStoryById(story.getId()).isPresent(), is(false));
 
         }
@@ -184,13 +184,13 @@ public class StoryServiceTest extends AbstractServiceTest {
         assertThrows(BadRequest.class,
                 () -> storyService.insert(story0));
 
-        // Missing AnthologyId field
+        // Missing anthologyId field
         final Story story3 = newStory();
         story3.setAnthologyId(null);
         assertThrows(BadRequest.class,
                 () -> storyService.insert(story3));
 
-        // Invalid AnthologyId field
+        // Invalid anthologyId field
         final Story story4 = newStory();
         story4.setAnthologyId(Long.MAX_VALUE);
         assertThrows(BadRequest.class,
@@ -255,16 +255,16 @@ public class StoryServiceTest extends AbstractServiceTest {
 
         // Completely empty instance
         final Story story0 = new Story();
-        assertThrows(BadRequest.class,
+        assertThrows(NotFound.class,
                 () -> storyService.update(story0));
 
-        // Missing AnthologyId field
+        // Missing anthologyId field
         final Story story3 = original.clone();
         story3.setAnthologyId(null);
         assertThrows(BadRequest.class,
                 () -> storyService.update(story3));
 
-        // Invalid AnthologyId field
+        // Invalid anthologyId field
         final Story story4 = original.clone();
         story4.setAnthologyId(Long.MAX_VALUE);
         assertThrows(BadRequest.class,
@@ -318,8 +318,8 @@ public class StoryServiceTest extends AbstractServiceTest {
 
     private Optional<Story> findStoryById(Long storyId) {
         TypedQuery<Story> query = entityManager.createNamedQuery
-                (STORY_NAME + ".findById", Story.class);
-        query.setParameter(ID_COLUMN, storyId);
+                (STORY_NAME + ".findById", Story.class)
+                .setParameter(ID_COLUMN, storyId);
         try {
             return Optional.of(query.getSingleResult());
         } catch (NoResultException e) {

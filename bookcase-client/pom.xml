@@ -40,6 +40,12 @@
     <!-- Dependencies -->
     <dependencies>
 
+        <!-- Java Bean Validation APIs -->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
+
         <!-- JUnit 4 -->
         <dependency>
             <groupId>junit</groupId>
@@ -67,6 +73,18 @@
             <groupId>org.craigmcc.bookcase</groupId>
             <artifactId>bookcase-shared</artifactId>
             <version>${bookcase-shared.version}</version>
+        </dependency>
+
+        <!-- Jersey JAX-RS Client -->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+        </dependency>
+
+        <!-- Jersey JAX-RS Jackson JSON Provider -->
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
         </dependency>
 
         <!-- Hamcrest Matchers for tests -->

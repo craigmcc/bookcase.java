@@ -35,7 +35,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -65,17 +64,14 @@ public class BookService extends Service<Book> {
     @ForBook
     private Event<UpdatedModelEvent> updatedBookEvent;
 
-    @Inject
-    private Validator validator;
-
     // Public Methods --------------------------------------------------------
 
     @Override
-    public Book delete(@NotNull Book book) throws InternalServerError, NotFound {
+    public @NotNull Book delete(@NotNull Long id) throws InternalServerError, NotFound {
 
         try {
 
-            Book deleted = entityManager.find(Book.class, book.getId());
+            Book deleted = entityManager.find(Book.class, id);
             if (deleted != null) {
                 entityManager.remove(deleted);
                 deleted.setUpdated(LocalDateTime.now());
@@ -87,7 +83,7 @@ public class BookService extends Service<Book> {
             throw new InternalServerError(e.getMessage(), e);
         }
 
-        throw new NotFound(String.format("id: Missing book %d", book.getId()));
+        throw new NotFound(String.format("id: Missing book %d", id));
 
     }
 

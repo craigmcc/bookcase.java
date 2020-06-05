@@ -36,6 +36,7 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 import javax.validation.ConstraintViolation;
@@ -79,11 +80,11 @@ public class MemberService extends Service<Member> {
     // Public Methods --------------------------------------------------------
 
     @Override
-    public Member delete(@NotNull Member member) throws InternalServerError, NotFound {
+    public @NotNull Member delete(@NotNull Long id) throws InternalServerError, NotFound {
 
         try {
 
-            Member deleted = entityManager.find(Member.class, member.getId());
+            Member deleted = entityManager.find(Member.class, id);
             if (deleted != null) {
                 entityManager.remove(deleted);
                 deleted.setUpdated(LocalDateTime.now());
@@ -95,7 +96,7 @@ public class MemberService extends Service<Member> {
             throw new InternalServerError(e.getMessage(), e);
         }
 
-        throw new NotFound(String.format("id: Missing member %d", member.getId()));
+        throw new NotFound(String.format("id: Missing member %d", id));
 
     }
 
@@ -105,8 +106,8 @@ public class MemberService extends Service<Member> {
         try {
 
             TypedQuery<Member> query = entityManager.createNamedQuery
-                    (MEMBER_NAME + ".findById", Member.class);
-            query.setParameter(ID_COLUMN, id);
+                    (MEMBER_NAME + ".findById", Member.class)
+                    .setParameter(ID_COLUMN, id);
             Member result = query.getSingleResult();
             return result;
 
@@ -140,8 +141,8 @@ public class MemberService extends Service<Member> {
         try {
 
             TypedQuery<Member> query = entityManager.createNamedQuery
-                    (MEMBER_NAME + ".findBySeriesId", Member.class);
-            query.setParameter(SERIES_ID_COLUMN, seriesId);
+                    (MEMBER_NAME + ".findBySeriesId", Member.class)
+                    .setParameter(SERIES_ID_COLUMN, seriesId);
             List<Member> result = query.getResultList();
             return result;
 
@@ -152,132 +153,56 @@ public class MemberService extends Service<Member> {
     }
 
     @Override
-    public Member insert(@NotNull Member member) throws BadRequest, InternalServerError, NotUnique {
+    public @NotNull Member insert(@NotNull Member member) throws BadRequest, InternalServerError, NotUnique {
 
         try {
 
-            // Precheck validation constraints
-            Set<ConstraintViolation<Member>> violations = validator.validate(member);
-            if (!violations.isEmpty()) {
-                throw new ConstraintViolationException(violations);
-            }
-
-            // Precheck bookId foreign key constraint
-            TypedQuery<Book> bookQuery = entityManager.createNamedQuery
-                    (BOOK_NAME + ".findById", Book.class);
-            bookQuery.setParameter(ID_COLUMN, member.getBookId());
-            try {
-                bookQuery.getSingleResult();
-            } catch (NoResultException e) {
-                throw new BadRequest(String.format("bookId: Missing book %d", member.getBookId()));
-            } catch (Exception e) {
-                throw new InternalServerError
-                        (String.format("bookId: Error checking for book %d", member.getBookId()), e);
-            }
-
-            // Precheck seriesId foreign key constraint
-            TypedQuery<Series> seriesQuery = entityManager.createNamedQuery
-                    (SERIES_NAME + ".findById", Series.class);
-            seriesQuery.setParameter(ID_COLUMN, member.getSeriesId());
-            try {
-                seriesQuery.getSingleResult();
-            } catch (NoResultException e) {
-                throw new BadRequest(String.format("seriesId: Missing series %d", member.getSeriesId()));
-            } catch (Exception e) {
-                throw new InternalServerError
-                        (String.format("seriesId: Error checking for series %d", member.getSeriesId()), e);
-            }
-
-            // Perform the requested insert
             member.setId(null); // Ignore any existing primary key
             member.setPublished(LocalDateTime.now());
             member.setUpdated(member.getPublished());
             entityManager.persist(member);
+            entityManager.flush();
             insertedMemberEvent.fire(new InsertedModelEvent(member));
-            return member;
 
-        } catch (BadRequest e) {
-            throw e;
         } catch (ConstraintViolationException e) {
-            throw new BadRequest(e.getMessage()); // TODO - format message?
-        } catch (EntityExistsException e) {
-            throw new NotUnique(String.format("Non-unique insert attempted for %s", member.toString()));
-        } catch (InternalServerError e) {
-            throw e;
-        } catch (RollbackException | EJBTransactionRolledbackException e) {
-            if ((e != null) && (e.getCause() instanceof ConstraintViolationException)) {
-                throw new BadRequest(e.getCause().getMessage()); // TODO - format message?
-            } else {
-                throw new BadRequest(e.getMessage());
-            }
+            throw new BadRequest(formatMessage(e));
+        } catch (PersistenceException e) {
+            handlePersistenceException(e);
         } catch (Exception e) {
             throw new InternalServerError(e.getMessage(), e);
         }
+
+        return member;
 
     }
 
     @Override
-    public Member update(@NotNull Member member) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Member update(@NotNull Member member) throws BadRequest, InternalServerError, NotFound, NotUnique {
+
+        Member original = null;
 
         try {
 
-            // Precheck validation constraints
-            Set<ConstraintViolation<Member>> violations = validator.validate(member);
-            if (!violations.isEmpty()) {
-                throw new ConstraintViolationException(violations);
-            }
-
-            // Precheck bookId foreign key constraint
-            TypedQuery<Book> bookQuery = entityManager.createNamedQuery
-                    (BOOK_NAME + ".findById", Book.class);
-            bookQuery.setParameter(ID_COLUMN, member.getBookId());
-            try {
-                bookQuery.getSingleResult();
-            } catch (NoResultException e) {
-                throw new BadRequest(String.format("bookId: Missing book %d", member.getBookId()));
-            } catch (Exception e) {
-                throw new InternalServerError
-                        (String.format("bookId: Error checking for book %d", member.getBookId()), e);
-            }
-
-            // Precheck seriesId foreign key constraint
-            TypedQuery<Series> seriesQuery = entityManager.createNamedQuery
-                    (SERIES_NAME + ".findById", Series.class);
-            seriesQuery.setParameter(ID_COLUMN, member.getSeriesId());
-            try {
-                seriesQuery.getSingleResult();
-            } catch (NoResultException e) {
-                throw new BadRequest(String.format("seriesId: Missing series %d", member.getSeriesId()));
-            } catch (Exception e) {
-                throw new InternalServerError
-                        (String.format("seriesId: Error checking for series %d", member.getSeriesId()), e);
-            }
-
-            // Perform the requested update
-            Member original = find(member.getId());
+            original = find(member.getId());
             original.copy(member);
             original.setUpdated(LocalDateTime.now());
             entityManager.merge(original);
+            entityManager.flush();
             updatedMemberEvent.fire(new UpdatedModelEvent(original));
-            return original;
 
-        } catch (BadRequest e) {
-            throw e;
         } catch (ConstraintViolationException e) {
-            throw new BadRequest(e.getMessage()); // TODO - format message?
+            throw new BadRequest(formatMessage(e));
         } catch (InternalServerError e) {
             throw e;
         } catch (NotFound e) {
             throw e;
-        } catch (RollbackException | EJBTransactionRolledbackException e) {
-            if ((e != null) && (e.getCause() instanceof ConstraintViolationException)) {
-                throw new BadRequest(e.getCause().getMessage()); // TODO - format message?
-            } else {
-                throw new BadRequest(e.getMessage());
-            }
+        } catch (PersistenceException e) {
+            handlePersistenceException(e);
         } catch (Exception e) {
             throw new InternalServerError(e.getMessage(), e);
         }
+
+        return original;
 
     }
 

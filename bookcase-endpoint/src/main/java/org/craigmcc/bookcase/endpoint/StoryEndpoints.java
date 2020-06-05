@@ -67,7 +67,8 @@ public class StoryEndpoints {
     // Endpoint Methods ------------------------------------------------------
 
     @DELETE
-    @Operation(description = "Delete existing story.")
+    @Path("/{storyId}")
+    @Operation(description = "Delete story by ID.")
     @APIResponses(value = {
             @APIResponse(
                     content = @Content(schema = @Schema(implementation = Story.class)),
@@ -87,15 +88,11 @@ public class StoryEndpoints {
     })
     @Counted
     public Response delete(
-            @Parameter(
-                    description = "Story to be deleted.",
-                    name = "story",
-                    schema = @Schema(implementation = Story.class)
-            )
-                    Story story
+            @Parameter(description = "ID of story to delete.")
+            @PathParam("storyId") Long storyId
     ) {
         try {
-            story = storyService.delete(story);
+            Story story = storyService.delete(storyId);
             return Response.ok(story).build();
         } catch (InternalServerError e) {
             LOG.log(SEVERE, e.getMessage(), e);
@@ -113,7 +110,7 @@ public class StoryEndpoints {
 
     @GET
     @Path("/{storyId}")
-    @Operation(description = "Find story by id.")
+    @Operation(description = "Find story by ID.")
     @APIResponses(value = {
             @APIResponse(
                     content = @Content(schema = @Schema(implementation = Story.class)),

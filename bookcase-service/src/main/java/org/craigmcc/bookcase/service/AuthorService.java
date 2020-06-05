@@ -36,7 +36,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -69,17 +68,14 @@ public class AuthorService extends Service<Author> {
     @ForAuthor
     private Event<UpdatedModelEvent> updatedAuthorEvent;
 
-    @Inject
-    private Validator validator;
-
     // Public Methods --------------------------------------------------------
 
     @Override
-    public Author delete(@NotNull Author author) throws InternalServerError, NotFound {
+    public @NotNull Author delete(@NotNull Long id) throws InternalServerError, NotFound {
 
         try {
 
-            Author deleted = entityManager.find(Author.class, author.getId());
+            Author deleted = entityManager.find(Author.class, id);
             if (deleted != null) {
                 entityManager.remove(deleted);
                 deleted.setUpdated(LocalDateTime.now());
@@ -91,7 +87,7 @@ public class AuthorService extends Service<Author> {
             throw new InternalServerError(e.getMessage(), e);
         }
 
-        throw new NotFound(String.format("id: Missing author %d", author.getId()));
+        throw new NotFound(String.format("id: Missing author %d", id));
 
     }
 
@@ -156,7 +152,7 @@ public class AuthorService extends Service<Author> {
     }
 
     @Override
-    public Author insert(@NotNull Author author) throws BadRequest, InternalServerError, NotUnique {
+    public @NotNull Author insert(@NotNull Author author) throws BadRequest, InternalServerError, NotUnique {
 
         try {
 
@@ -197,7 +193,7 @@ public class AuthorService extends Service<Author> {
     }
 
     @Override
-    public Author update(@NotNull Author author) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Author update(@NotNull Author author) throws BadRequest, InternalServerError, NotFound, NotUnique {
 
         Author original = null;
 

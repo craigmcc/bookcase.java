@@ -124,7 +124,7 @@ public class AuthorServiceTest extends AbstractServiceTest {
 */
 
             // Delete and verify we can no longer retrieve it
-            authorService.delete(author);
+            authorService.delete(author.getId());
             assertThat(findAuthorById(author.getId()).isPresent(), is(false));
 
             // Delete should have cascaded to anthologies/books/series

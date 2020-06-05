@@ -97,11 +97,11 @@ public class MemberServiceTest extends AbstractServiceTest {
         List<Member> members = findAllMembers();
         assertThat(members.size(), is(greaterThan(0)));
 
-        for (org.craigmcc.bookcase.model.Member Member : members) {
+        for (Member member: members) {
 
             // Delete and verify we can no longer retrieve it
-            memberService.delete(Member);
-            assertThat(findMemberById(Member.getId()).isPresent(), is(false));
+            memberService.delete(member.getId());
+            assertThat(findMemberById(member.getId()).isPresent(), is(false));
 
         }
 
@@ -255,7 +255,7 @@ public class MemberServiceTest extends AbstractServiceTest {
 
         // Completely empty instance
         final Member member0 = new Member();
-        assertThrows(BadRequest.class,
+        assertThrows(NotFound.class,
                 () -> memberService.update(member0));
 
         // Missing bookId field
@@ -318,8 +318,8 @@ public class MemberServiceTest extends AbstractServiceTest {
 
     private Optional<Member> findMemberById(Long memberId) {
         TypedQuery<Member> query = entityManager.createNamedQuery
-                (MEMBER_NAME + ".findById", Member.class);
-        query.setParameter(ID_COLUMN, memberId);
+                (MEMBER_NAME + ".findById", Member.class)
+                .setParameter(ID_COLUMN, memberId);
         try {
             return Optional.of(query.getSingleResult());
         } catch (NoResultException e) {
