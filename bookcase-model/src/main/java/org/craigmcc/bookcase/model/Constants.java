@@ -38,6 +38,8 @@ public interface Constants {
     String FIRST_NAME_VALIDATION_MESSAGE =
             "firstName: Required and must not be blank";
 
+    String GOOGLE_ID = "googleId";
+
     String LAST_NAME_COLUMN = "lastName";
     String LAST_NAME_VALIDATION_MESSAGE =
             "lastName: Required and must not be blank";

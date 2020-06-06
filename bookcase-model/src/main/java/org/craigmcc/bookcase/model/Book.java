@@ -123,6 +123,13 @@ public class Book extends Model<Book> implements Constants {
     private Long authorId;
 
     @Column(
+            name = GOOGLE_ID,
+            nullable = true
+    )
+    @Schema(description = "Google Books volume identifier for this book")
+    private String googleId;
+
+    @Column(
             name = LOCATION_COLUMN,
             nullable = true
     )
@@ -217,6 +224,14 @@ public class Book extends Model<Book> implements Constants {
         this.authorId = authorId;
     }
 
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
+    }
+
     public Location getLocation() {
         return location;
     }
@@ -274,6 +289,7 @@ public class Book extends Model<Book> implements Constants {
     @Override
     public void copy(Book that) {
         this.authorId = that.authorId;
+        this.googleId = that.googleId;
         this.location = that.location;
         this.notes = that.notes;
         this.read = that.read;
@@ -289,6 +305,7 @@ public class Book extends Model<Book> implements Constants {
         return new EqualsBuilder()
                 .appendSuper(super.equals(that))
                 .append(this.authorId, that.authorId)
+                .append(this.googleId, that.googleId)
                 .append(this.location, that.location)
                 .append(this.notes, that.notes)
                 .append(this.read, that.read)
@@ -301,6 +318,7 @@ public class Book extends Model<Book> implements Constants {
         return new HashCodeBuilder()
                 .appendSuper(super.hashCode())
                 .append(this.authorId)
+                .append(this.googleId)
                 .append(this.location)
                 .append(this.notes)
                 .append(this.read)
@@ -323,6 +341,7 @@ public class Book extends Model<Book> implements Constants {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
                 .appendSuper(super.toString())
                 .append(AUTHOR_ID_COLUMN, this.authorId)
+                .append(GOOGLE_ID, this.googleId)
                 .append(LOCATION_COLUMN, this.location)
                 .append(NOTES_COLUMN, this.notes)
                 .append(READ_COLUMN, this.read)
