@@ -39,7 +39,7 @@ public class SeriesClient extends AbstractServiceClient<Series> {
     // Public Methods --------------------------------------------------------
 
     @Override
-    public Series delete(@NotNull Long seriesId) throws InternalServerError, NotFound {
+    public @NotNull Series delete(@NotNull Long seriesId) throws InternalServerError, NotFound {
 
         Response response = seriesTarget
                 .path(seriesId.toString())
@@ -56,7 +56,7 @@ public class SeriesClient extends AbstractServiceClient<Series> {
     }
 
     @Override
-    public Series find(@NotNull Long seriesId) throws InternalServerError, NotFound {
+    public @NotNull Series find(@NotNull Long seriesId) throws InternalServerError, NotFound {
 
         Response response = seriesTarget
                 .path(seriesId.toString())
@@ -86,6 +86,12 @@ public class SeriesClient extends AbstractServiceClient<Series> {
 
     }
 
+    /**
+     * <p>Return a list of {@link Series} objects matching the specified title
+     * segment, ordered by title.</p>
+     *
+     * @param title The title segment to be matched
+     */
     public @NotNull List<Series> findByTitle(@NotNull String title) throws InternalServerError {
 
         Response response = seriesTarget
@@ -102,7 +108,7 @@ public class SeriesClient extends AbstractServiceClient<Series> {
     }
 
     @Override
-    public Series insert(@NotNull Series series) throws BadRequest, InternalServerError, NotUnique {
+    public @NotNull Series insert(@NotNull Series series) throws BadRequest, InternalServerError, NotUnique {
 
         Response response = seriesTarget
                 .request(MediaType.APPLICATION_JSON)
@@ -120,7 +126,7 @@ public class SeriesClient extends AbstractServiceClient<Series> {
     }
 
     @Override
-    public Series update(@NotNull Series series) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Series update(@NotNull Series series) throws BadRequest, InternalServerError, NotFound, NotUnique {
 
         Response response = seriesTarget
                 .request(MediaType.APPLICATION_JSON)

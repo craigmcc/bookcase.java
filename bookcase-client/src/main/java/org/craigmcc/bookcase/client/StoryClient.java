@@ -39,7 +39,7 @@ public class StoryClient extends AbstractServiceClient<Story> {
     // Public Methods --------------------------------------------------------
 
     @Override
-    public Story delete(@NotNull Long storyId) throws InternalServerError, NotFound {
+    public @NotNull Story delete(@NotNull Long storyId) throws InternalServerError, NotFound {
 
         Response response = storyTarget
                 .path(storyId.toString())
@@ -56,7 +56,7 @@ public class StoryClient extends AbstractServiceClient<Story> {
     }
 
     @Override
-    public Story find(@NotNull Long storyId) throws InternalServerError, NotFound {
+    public @NotNull Story find(@NotNull Long storyId) throws InternalServerError, NotFound {
 
         Response response = storyTarget
                 .path(storyId.toString())
@@ -102,7 +102,7 @@ public class StoryClient extends AbstractServiceClient<Story> {
     }
 
     @Override
-    public Story insert(@NotNull Story story) throws BadRequest, InternalServerError, NotUnique {
+    public @NotNull Story insert(@NotNull Story story) throws BadRequest, InternalServerError, NotUnique {
 
         Response response = storyTarget
                 .request(MediaType.APPLICATION_JSON)
@@ -120,7 +120,7 @@ public class StoryClient extends AbstractServiceClient<Story> {
     }
 
     @Override
-    public Story update(@NotNull Story story) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Story update(@NotNull Story story) throws BadRequest, InternalServerError, NotFound, NotUnique {
 
         Response response = storyTarget
                 .request(MediaType.APPLICATION_JSON)

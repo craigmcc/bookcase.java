@@ -57,7 +57,8 @@ public class AnthologyServiceTest extends AbstractServiceTest {
 
     @Deployment
     public static JavaArchive createDeployment() {
-        JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "testAnthology.jar")
+        JavaArchive archive =
+                ShrinkWrap.create(JavaArchive.class, "testAnthology.jar")
                 .addClass(AnthologyService.class);
         addServiceFixtures(archive, false);
         System.out.println("AnthologyServiceTest:  Assembled Archive:");

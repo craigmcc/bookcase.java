@@ -29,7 +29,7 @@
 
     <name>Bookcase Client</name>
     <description>
-        Client interfaces and tests for the Bookcase application.
+        Client interfaces for the Bookcase application.
     </description>
 
     <!-- Build Configuration -->
@@ -40,17 +40,10 @@
     <!-- Dependencies -->
     <dependencies>
 
-        <!-- Java Bean Validation APIs -->
+        <!-- Bean Validation APIs -->
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
-        </dependency>
-
-        <!-- JUnit 4 -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <!-- Bookcase: Model Module -->
@@ -58,14 +51,6 @@
             <groupId>org.craigmcc.bookcase</groupId>
             <artifactId>bookcase-model</artifactId>
             <version>${bookcase-model.version}</version>
-        </dependency>
-
-        <!-- Bookcase: Service Module -->
-        <dependency>
-            <groupId>org.craigmcc.bookcase</groupId>
-            <artifactId>bookcase-service</artifactId>
-            <version>${bookcase-service.version}</version>
-            <scope>test</scope> <!-- Used in tests only -->
         </dependency>
 
         <!-- Bookcase: Shared Module -->
@@ -87,21 +72,6 @@
             <artifactId>jersey-media-json-jackson</artifactId>
         </dependency>
 
-        <!-- Hamcrest Matchers for tests -->
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>java-hamcrest</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Arquillian JUnit Test Runner -->
-        <dependency>
-            <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-container</artifactId>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
-
 
 </project>

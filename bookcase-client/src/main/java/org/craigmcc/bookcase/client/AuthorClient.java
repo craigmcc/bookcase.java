@@ -39,7 +39,7 @@ public class AuthorClient extends AbstractServiceClient<Author> {
     // Public Methods --------------------------------------------------------
 
     @Override
-    public Author delete(@NotNull Long authorId) throws InternalServerError, NotFound {
+    public @NotNull Author delete(@NotNull Long authorId) throws InternalServerError, NotFound {
 
         Response response = authorTarget
                 .path(authorId.toString())
@@ -56,7 +56,7 @@ public class AuthorClient extends AbstractServiceClient<Author> {
     }
 
     @Override
-    public Author find(@NotNull Long authorId) throws InternalServerError, NotFound {
+    public @NotNull Author find(@NotNull Long authorId) throws InternalServerError, NotFound {
 
         Response response = authorTarget
                 .path(authorId.toString())
@@ -86,6 +86,12 @@ public class AuthorClient extends AbstractServiceClient<Author> {
 
     }
 
+    /**
+     * <p>Return a list of {@link Author} objects matching the specified name
+     * segment, ordered by lastName and firstName.</p>
+     *
+     * @param name The name segment to be matched
+     */
     public @NotNull List<Author> findByName(@NotNull String name) throws InternalServerError {
 
         Response response = authorTarget
@@ -102,7 +108,7 @@ public class AuthorClient extends AbstractServiceClient<Author> {
     }
 
     @Override
-    public Author insert(@NotNull Author author) throws BadRequest, InternalServerError, NotUnique {
+    public @NotNull Author insert(@NotNull Author author) throws BadRequest, InternalServerError, NotUnique {
 
         Response response = authorTarget
                 .request(MediaType.APPLICATION_JSON)
@@ -120,7 +126,7 @@ public class AuthorClient extends AbstractServiceClient<Author> {
     }
 
     @Override
-    public Author update(@NotNull Author author) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Author update(@NotNull Author author) throws BadRequest, InternalServerError, NotFound, NotUnique {
 
         Response response = authorTarget
                 .request(MediaType.APPLICATION_JSON)

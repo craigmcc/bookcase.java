@@ -39,7 +39,7 @@ public class BookClient extends AbstractServiceClient<Book> {
     // Public Methods --------------------------------------------------------
 
     @Override
-    public Book delete(@NotNull Long bookId) throws InternalServerError, NotFound {
+    public @NotNull Book delete(@NotNull Long bookId) throws InternalServerError, NotFound {
 
         Response response = bookTarget
                 .path(bookId.toString())
@@ -56,7 +56,7 @@ public class BookClient extends AbstractServiceClient<Book> {
     }
 
     @Override
-    public Book find(@NotNull Long bookId) throws InternalServerError, NotFound {
+    public @NotNull Book find(@NotNull Long bookId) throws InternalServerError, NotFound {
 
         Response response = bookTarget
                 .path(bookId.toString())
@@ -86,6 +86,12 @@ public class BookClient extends AbstractServiceClient<Book> {
 
     }
 
+    /**
+     * <p>Return a list of {@link Book} objects matching the specified title
+     * segment, ordered by title.</p>
+     *
+     * @param title The title segment to be matched
+     */
     public @NotNull List<Book> findByTitle(@NotNull String title) throws InternalServerError {
 
         Response response = bookTarget
@@ -102,7 +108,7 @@ public class BookClient extends AbstractServiceClient<Book> {
     }
 
     @Override
-    public Book insert(@NotNull Book book) throws BadRequest, InternalServerError, NotUnique {
+    public @NotNull Book insert(@NotNull Book book) throws BadRequest, InternalServerError, NotUnique {
 
         Response response = bookTarget
                 .request(MediaType.APPLICATION_JSON)
@@ -120,7 +126,7 @@ public class BookClient extends AbstractServiceClient<Book> {
     }
 
     @Override
-    public Book update(@NotNull Book book) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Book update(@NotNull Book book) throws BadRequest, InternalServerError, NotFound, NotUnique {
 
         Response response = bookTarget
                 .request(MediaType.APPLICATION_JSON)

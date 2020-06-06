@@ -39,7 +39,7 @@ public class MemberClient extends AbstractServiceClient<Member> {
     // Public Methods --------------------------------------------------------
 
     @Override
-    public Member delete(@NotNull Long memberId) throws InternalServerError, NotFound {
+    public @NotNull Member delete(@NotNull Long memberId) throws InternalServerError, NotFound {
 
         Response response = memberTarget
                 .path(memberId.toString())
@@ -56,7 +56,7 @@ public class MemberClient extends AbstractServiceClient<Member> {
     }
 
     @Override
-    public Member find(@NotNull Long memberId) throws InternalServerError, NotFound {
+    public @NotNull Member find(@NotNull Long memberId) throws InternalServerError, NotFound {
 
         Response response = memberTarget
                 .path(memberId.toString())
@@ -102,7 +102,7 @@ public class MemberClient extends AbstractServiceClient<Member> {
     }
 
     @Override
-    public Member insert(@NotNull Member member) throws BadRequest, InternalServerError, NotUnique {
+    public @NotNull Member insert(@NotNull Member member) throws BadRequest, InternalServerError, NotUnique {
 
         Response response = memberTarget
                 .request(MediaType.APPLICATION_JSON)
@@ -120,7 +120,7 @@ public class MemberClient extends AbstractServiceClient<Member> {
     }
 
     @Override
-    public Member update(@NotNull Member member) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Member update(@NotNull Member member) throws BadRequest, InternalServerError, NotFound, NotUnique {
 
         Response response = memberTarget
                 .request(MediaType.APPLICATION_JSON)

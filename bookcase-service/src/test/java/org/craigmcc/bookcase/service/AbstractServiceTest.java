@@ -34,7 +34,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
  */
 public abstract class AbstractServiceTest {
 
-    // Public Methods --------------------------------------------------------
+    // Protected Methods -----------------------------------------------------
 
     /**
      * <p>Add fixtures commonly required by service test implementations.</p>
@@ -43,7 +43,7 @@ public abstract class AbstractServiceTest {
      * @param productionPersistence Add reference to production (if true) or test
      *                              (if false) <code>persistence.xml</code> fixture
      */
-    public static void addServiceFixtures(
+    protected static void addServiceFixtures(
             JavaArchive archive,
             boolean productionPersistence
     ) {

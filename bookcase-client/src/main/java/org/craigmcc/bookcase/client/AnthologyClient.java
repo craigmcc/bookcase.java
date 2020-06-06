@@ -39,7 +39,7 @@ public class AnthologyClient extends AbstractServiceClient<Anthology> {
     // Public Methods --------------------------------------------------------
 
     @Override
-    public Anthology delete(@NotNull Long anthologyId) throws InternalServerError, NotFound {
+    public @NotNull Anthology delete(@NotNull Long anthologyId) throws InternalServerError, NotFound {
 
         Response response = anthologyTarget
                 .path(anthologyId.toString())
@@ -56,7 +56,7 @@ public class AnthologyClient extends AbstractServiceClient<Anthology> {
     }
 
     @Override
-    public Anthology find(@NotNull Long anthologyId) throws InternalServerError, NotFound {
+    public @NotNull Anthology find(@NotNull Long anthologyId) throws InternalServerError, NotFound {
 
         Response response = anthologyTarget
                 .path(anthologyId.toString())
@@ -86,6 +86,12 @@ public class AnthologyClient extends AbstractServiceClient<Anthology> {
 
     }
 
+    /**
+     * <p>Return a list of {@link Anthology} objects matching the specified title
+     * segment, ordered by title.</p>
+     *
+     * @param title The title segment to be matched
+     */
     public @NotNull List<Anthology> findByTitle(@NotNull String title) throws InternalServerError {
 
         Response response = anthologyTarget
@@ -102,7 +108,7 @@ public class AnthologyClient extends AbstractServiceClient<Anthology> {
     }
 
     @Override
-    public Anthology insert(@NotNull Anthology anthology) throws BadRequest, InternalServerError, NotUnique {
+    public @NotNull Anthology insert(@NotNull Anthology anthology) throws BadRequest, InternalServerError, NotUnique {
 
         Response response = anthologyTarget
                 .request(MediaType.APPLICATION_JSON)
@@ -120,7 +126,7 @@ public class AnthologyClient extends AbstractServiceClient<Anthology> {
     }
 
     @Override
-    public Anthology update(@NotNull Anthology anthology) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Anthology update(@NotNull Anthology anthology) throws BadRequest, InternalServerError, NotFound, NotUnique {
 
         Response response = anthologyTarget
                 .request(MediaType.APPLICATION_JSON)
