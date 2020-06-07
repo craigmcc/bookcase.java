@@ -37,12 +37,12 @@ public abstract class AbstractServiceClient<M extends Model> extends AbstractCli
     // Manifest Constants ----------------------------------------------------
 
     // WebTarget path elements (relative to getBaseTarget()) for various model clients
-    public static final String ANTHOLOGY_PATH = "anthologies";
-    public static final String AUTHOR_PATH = "authors";
-    public static final String BOOK_PATH = "books";
-    public static final String MEMBER_PATH = "members";
-    public static final String SERIES_PATH = "series";
-    public static final String STORY_PATH = "stories";
+    public static final String ANTHOLOGY_PATH = "/anthologies";
+    public static final String AUTHOR_PATH = "/authors";
+    public static final String BOOK_PATH = "/books";
+    public static final String MEMBER_PATH = "/members";
+    public static final String SERIES_PATH = "/series";
+    public static final String STORY_PATH = "/stories";
 
     // Public Methods --------------------------------------------------------
 
