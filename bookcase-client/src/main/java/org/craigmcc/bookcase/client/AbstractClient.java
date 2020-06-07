@@ -58,6 +58,8 @@ public abstract class AbstractClient {
     public static final int RESPONSE_BAD_REQUEST = Response.Status.BAD_REQUEST.getStatusCode();
     public static final int RESPONSE_CONFLICT = Response.Status.CONFLICT.getStatusCode();
     public static final int RESPONSE_CREATED = Response.Status.CREATED.getStatusCode();
+    public static final int RESPONSE_FORBIDDEN = Response.Status.FORBIDDEN.getStatusCode();
+    public static final int RESPONSE_NO_CONTENT = Response.Status.NO_CONTENT.getStatusCode();
     public static final int RESPONSE_NOT_FOUND = Response.Status.NOT_FOUND.getStatusCode();
     public static final int RESPONSE_OK = Response.Status.OK.getStatusCode();
 

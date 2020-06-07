@@ -58,6 +58,7 @@ public class AnthologyClient extends AbstractServiceClient<Anthology> {
     @Override
     public @NotNull Anthology find(@NotNull Long anthologyId) throws InternalServerError, NotFound {
 
+
         Response response = anthologyTarget
                 .path(anthologyId.toString())
                 .request(MediaType.APPLICATION_JSON)
