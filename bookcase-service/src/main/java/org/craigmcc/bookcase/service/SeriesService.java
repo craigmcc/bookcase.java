@@ -19,11 +19,12 @@ import org.craigmcc.bookcase.event.DeletedModelEvent;
 import org.craigmcc.bookcase.event.ForSeries;
 import org.craigmcc.bookcase.event.InsertedModelEvent;
 import org.craigmcc.bookcase.event.UpdatedModelEvent;
-import org.craigmcc.bookcase.exception.BadRequest;
-import org.craigmcc.bookcase.exception.InternalServerError;
-import org.craigmcc.bookcase.exception.NotFound;
-import org.craigmcc.bookcase.exception.NotUnique;
 import org.craigmcc.bookcase.model.Series;
+import org.craigmcc.library.model.ModelService;
+import org.craigmcc.library.shared.exception.BadRequest;
+import org.craigmcc.library.shared.exception.InternalServerError;
+import org.craigmcc.library.shared.exception.NotFound;
+import org.craigmcc.library.shared.exception.NotUnique;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -46,7 +47,7 @@ import static org.craigmcc.library.model.Constants.ID_COLUMN;
 
 @LocalBean
 @Stateless
-public class SeriesService extends Service<Series> {
+public class SeriesService extends ModelService<Series> {
 
     // Instance Variables ----------------------------------------------------
 

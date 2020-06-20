@@ -40,16 +40,18 @@
     <!-- Dependencies -->
     <dependencies>
 
-        <!-- Jackson Formatting for LocalDateTime and friends -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-        </dependency>
-
-        <!-- Bean Validation APIs -->
+        <!-- Java Bean Validation APIs -->
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Standard JAX-RS APIs -->
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Bookcase: Model Module -->
@@ -59,29 +61,18 @@
             <version>${bookcase-model.version}</version>
         </dependency>
 
-        <!-- Bookcase: Shared Module -->
+        <!-- Personal Library: Model-JPA Module -->
         <dependency>
-            <groupId>org.craigmcc.bookcase</groupId>
-            <artifactId>bookcase-shared</artifactId>
-            <version>${bookcase-shared.version}</version>
+            <groupId>org.craigmcc.library</groupId>
+            <artifactId>model-jpa</artifactId>
+            <version>${model-jpa.version}</version>
         </dependency>
 
-        <!-- Jersey JAX-RS Client -->
+        <!-- Personal Library: Shared Module -->
         <dependency>
-            <groupId>org.glassfish.jersey.core</groupId>
-            <artifactId>jersey-client</artifactId>
-        </dependency>
-
-        <!-- Jersey JAX-RS Dependency Injection Module -->
-        <dependency>
-            <groupId>org.glassfish.jersey.inject</groupId>
-            <artifactId>jersey-hk2</artifactId>
-        </dependency>
-
-        <!-- Jersey JAX-RS Jackson JSON Provider -->
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-json-jackson</artifactId>
+            <groupId>org.craigmcc.library</groupId>
+            <artifactId>shared</artifactId>
+            <version>${shared.version}</version>
         </dependency>
 
     </dependencies>

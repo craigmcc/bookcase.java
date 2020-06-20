@@ -19,7 +19,7 @@ import org.craigmcc.bookcase.event.DeletedModelEvent;
 import org.craigmcc.bookcase.event.InsertedModelEvent;
 import org.craigmcc.bookcase.event.MutatedModelEvent;
 import org.craigmcc.bookcase.event.UpdatedModelEvent;
-import org.craigmcc.bookcase.exception.NotFound;
+import org.craigmcc.library.shared.exception.NotFound;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;

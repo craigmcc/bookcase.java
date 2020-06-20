@@ -15,11 +15,11 @@
  */
 package org.craigmcc.bookcase.service;
 
-import org.craigmcc.bookcase.exception.BadRequest;
-import org.craigmcc.bookcase.exception.NotFound;
 import org.craigmcc.bookcase.model.Book;
 import org.craigmcc.bookcase.model.Member;
 import org.craigmcc.bookcase.model.Series;
+import org.craigmcc.library.shared.exception.BadRequest;
+import org.craigmcc.library.shared.exception.NotFound;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;

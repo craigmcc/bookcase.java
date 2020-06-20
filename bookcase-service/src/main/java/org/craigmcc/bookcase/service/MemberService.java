@@ -19,43 +19,35 @@ import org.craigmcc.bookcase.event.DeletedModelEvent;
 import org.craigmcc.bookcase.event.ForMember;
 import org.craigmcc.bookcase.event.InsertedModelEvent;
 import org.craigmcc.bookcase.event.UpdatedModelEvent;
-import org.craigmcc.bookcase.exception.BadRequest;
-import org.craigmcc.bookcase.exception.InternalServerError;
-import org.craigmcc.bookcase.exception.NotFound;
-import org.craigmcc.bookcase.exception.NotUnique;
-import org.craigmcc.bookcase.model.Book;
 import org.craigmcc.bookcase.model.Member;
-import org.craigmcc.bookcase.model.Series;
+import org.craigmcc.library.model.ModelService;
+import org.craigmcc.library.shared.exception.BadRequest;
+import org.craigmcc.library.shared.exception.InternalServerError;
+import org.craigmcc.library.shared.exception.NotFound;
+import org.craigmcc.library.shared.exception.NotUnique;
 
-import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
-import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
-import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
-import static org.craigmcc.bookcase.model.Constants.BOOK_NAME;
 import static org.craigmcc.bookcase.model.Constants.MEMBER_NAME;
 import static org.craigmcc.bookcase.model.Constants.SERIES_ID_COLUMN;
-import static org.craigmcc.bookcase.model.Constants.SERIES_NAME;
 import static org.craigmcc.library.model.Constants.ID_COLUMN;
 
 @LocalBean
 @Stateless
-public class MemberService extends Service<Member> {
+public class MemberService extends ModelService<Member> {
 
     // Instance Variables ----------------------------------------------------
 

@@ -15,12 +15,12 @@
  */
 package org.craigmcc.bookcase.endpoint;
 
-import org.craigmcc.bookcase.exception.BadRequest;
-import org.craigmcc.bookcase.exception.InternalServerError;
-import org.craigmcc.bookcase.exception.NotFound;
-import org.craigmcc.bookcase.exception.NotUnique;
 import org.craigmcc.bookcase.model.Story;
 import org.craigmcc.bookcase.service.StoryService;
+import org.craigmcc.library.shared.exception.BadRequest;
+import org.craigmcc.library.shared.exception.InternalServerError;
+import org.craigmcc.library.shared.exception.NotFound;
+import org.craigmcc.library.shared.exception.NotUnique;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;

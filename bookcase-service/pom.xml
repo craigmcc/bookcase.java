@@ -166,6 +166,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Personal Library: Shared Module -->
+        <dependency>
+            <groupId>org.craigmcc.library</groupId>
+            <artifactId>shared</artifactId>
+            <version>${shared.version}</version>
+        </dependency>
+
     </dependencies>
 
     <!-- Dependency Management -->

@@ -16,9 +16,8 @@
 package org.craigmcc.bookcase.endpoint;
 
 import org.craigmcc.bookcase.event.MutatedModelEvent;
-import org.craigmcc.bookcase.exception.NotFound;
-import org.craigmcc.bookcase.model.Book;
 import org.craigmcc.bookcase.service.MutatedModelEventService;
+import org.craigmcc.library.shared.exception.NotFound;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -92,7 +91,7 @@ public class MutatedModelEventEndpoints {
     @Operation(description = "Find all mutated model events, ordered by updated timestamp.")
     @APIResponses(value = {
             @APIResponse(
-                    content = @Content(schema = @Schema(implementation = Book.class)),
+                    content = @Content(schema = @Schema(implementation = MutatedModelEvent.class)),
                     description = "The found mutated model events.",
                     responseCode = "200"
             ),

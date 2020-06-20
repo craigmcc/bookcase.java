@@ -18,11 +18,12 @@ package org.craigmcc.bookcase.service;
 import org.craigmcc.bookcase.event.DeletedModelEvent;
 import org.craigmcc.bookcase.event.converter.MutatedModelEventTypeConverter;
 import org.craigmcc.bookcase.event.validator.EventTypeValidator;
-import org.craigmcc.bookcase.exception.BadRequest;
 import org.craigmcc.bookcase.model.Constants;
 import org.craigmcc.bookcase.model.converter.BookLocationConverter;
 import org.craigmcc.bookcase.model.validator.BookLocationValidator;
 import org.craigmcc.library.model.Model;
+import org.craigmcc.library.model.ModelService;
+import org.craigmcc.library.shared.exception.BadRequest;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
@@ -47,7 +48,7 @@ public abstract class AbstractServiceTest {
             JavaArchive archive,
             boolean productionPersistence
     ) {
-        archive.addClasses(AbstractServiceTest.class, Service.class);
+        archive.addClasses(AbstractServiceTest.class, ModelService.class);
         archive.addClasses
                 (DevModeDepopulateService.class, DevModePopulateService.class);
         archive.addPackages(true,
@@ -59,9 +60,9 @@ public abstract class AbstractServiceTest {
                 Constants.class.getPackage(),              // org.craigmcc.bookcase.model
                 BookLocationConverter.class.getPackage(),  // org.craigmcc.bookcase.model.converter
                 BookLocationValidator.class.getPackage(),  // org.craigmcc.bookcase.model.validator
-                BadRequest.class.getPackage(),             // org.craigmcc.bookcase.service.exception
                 DeletedModelEvent.class.getPackage(),      // org.craigmcc.bookcase.service.event
-                Model.class.getPackage()                   // org.craigmcc.library.model
+                Model.class.getPackage(),                  // org.craigmcc.library.model
+                BadRequest.class.getPackage()              // org.craigmcc.library.shared.exception
         );
         if (productionPersistence) {
             archive.addAsManifestResource

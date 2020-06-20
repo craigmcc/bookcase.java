@@ -45,10 +45,9 @@
     <!-- Modules -->
     <modules>
         <module>bookcase-client</module>
+        <module>bookcase-endpoint</module>
         <module>bookcase-model</module>
         <module>bookcase-service</module>
-        <module>bookcase-endpoint</module>
-        <module>bookcase-shared</module>
         <module>bookcase-web</module>
     </modules>
 
@@ -58,14 +57,17 @@
         <!-- Maven Configuration -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- Version Dependencies -->
+        <!-- Version Dependencies - Internal Modules -->
         <bookcase-client.version>1.0.0-SNAPSHOT</bookcase-client.version>
         <bookcase-endpoint.version>1.0.0-SNAPSHOT</bookcase-endpoint.version>
         <bookcase-model.version>1.0.0-SNAPSHOT</bookcase-model.version>
         <bookcase-service.version>1.0.0-SNAPSHOT</bookcase-service.version>
         <bookcase-shared.version>1.0.0-SNAPSHOT</bookcase-shared.version>
         <bookcase-web.version>1.0.0-SNAPSHOT</bookcase-web.version>
+
+        <!-- Version Dependencies - Personal Library -->
         <model-jpa.version>1.0.0-SNAPSHOT</model-jpa.version>
+        <shared.version>1.0.0-SNAPSHOT</shared.version>
 
     </properties>
 

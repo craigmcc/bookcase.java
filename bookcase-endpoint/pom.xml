@@ -109,6 +109,13 @@
             <version>${bookcase-service.version}</version>
         </dependency>
 
+        <!-- Personal Library: Shared Module -->
+        <dependency>
+            <groupId>org.craigmcc.library</groupId>
+            <artifactId>shared</artifactId>
+            <version>${shared.version}</version>
+        </dependency>
+
         <!-- Uses Jackson for JSON Pretty Printing -->
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
