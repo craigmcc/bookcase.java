@@ -231,7 +231,7 @@ public class StoryServiceTest extends AbstractServiceTest {
             /* Ignore */;
         }
         story.setOrdinal(story.getOrdinal() + 100);
-        Story updated = storyService.update(story);
+        Story updated = storyService.update(story.getId(), story);
 
         // Validate this entity
         assertThat(updated.getId(), is(story.getId()));
@@ -253,34 +253,29 @@ public class StoryServiceTest extends AbstractServiceTest {
             /* Ignore */;
         }
 
-        // Completely empty instance
-        final Story story0 = new Story();
-        assertThrows(NotFound.class,
-                () -> storyService.update(story0));
-
         // Missing anthologyId field
         final Story story3 = original.clone();
         story3.setAnthologyId(null);
         assertThrows(BadRequest.class,
-                () -> storyService.update(story3));
+                () -> storyService.update(story3.getId(), story3));
 
         // Invalid anthologyId field
         final Story story4 = original.clone();
         story4.setAnthologyId(Long.MAX_VALUE);
         assertThrows(BadRequest.class,
-                () -> storyService.update(story4));
+                () -> storyService.update(story4.getId(),story4));
 
         // Missing bookId field
         final Story story1 = original.clone();
         story1.setBookId(null);
         assertThrows(BadRequest.class,
-                () -> storyService.update(story1));
+                () -> storyService.update(story1.getId(), story1));
 
         // Invalid bookId field
         final Story story2 = original.clone();
         story2.setBookId(Long.MAX_VALUE);
         assertThrows(BadRequest.class,
-                () -> storyService.update(story2));
+                () -> storyService.update(story2.getId(), story2));
 
     }
 

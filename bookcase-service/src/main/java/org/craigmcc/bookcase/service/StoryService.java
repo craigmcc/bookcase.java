@@ -89,7 +89,12 @@ public class StoryService extends ModelService<Story> {
     }
 
     @Override
-    public @NotNull Story find(@NotNull Long id) throws InternalServerError, NotFound {
+    public @NotNull Story find(@NotNull Long id)
+            throws InternalServerError, NotFound {
+
+        if (id == null) {
+            throw new NotFound("id: Cannot be null");
+        }
 
         try {
 
@@ -141,7 +146,8 @@ public class StoryService extends ModelService<Story> {
     }
 
     @Override
-    public @NotNull Story insert(@NotNull Story story) throws BadRequest, InternalServerError, NotUnique {
+    public @NotNull Story insert(@NotNull Story story)
+            throws BadRequest, InternalServerError, NotUnique {
 
         try {
 
@@ -165,13 +171,14 @@ public class StoryService extends ModelService<Story> {
     }
 
     @Override
-    public @NotNull Story update(@NotNull Story story) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Story update(@NotNull Long storyId, @NotNull Story story)
+            throws BadRequest, InternalServerError, NotFound, NotUnique {
 
         Story original = null;
 
         try {
 
-            original = find(story.getId());
+            original = find(storyId);
             original.copy(story);
             original.setUpdated(LocalDateTime.now());
             entityManager.merge(original);

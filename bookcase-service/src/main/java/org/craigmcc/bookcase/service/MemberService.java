@@ -93,7 +93,12 @@ public class MemberService extends ModelService<Member> {
     }
 
     @Override
-    public @NotNull Member find(@NotNull Long id) throws InternalServerError, NotFound {
+    public @NotNull Member find(@NotNull Long id)
+            throws InternalServerError, NotFound {
+
+        if (id == null) {
+            throw new NotFound("id: Cannot be null");
+        }
 
         try {
 
@@ -145,7 +150,8 @@ public class MemberService extends ModelService<Member> {
     }
 
     @Override
-    public @NotNull Member insert(@NotNull Member member) throws BadRequest, InternalServerError, NotUnique {
+    public @NotNull Member insert(@NotNull Member member)
+            throws BadRequest, InternalServerError, NotUnique {
 
         try {
 
@@ -169,13 +175,14 @@ public class MemberService extends ModelService<Member> {
     }
 
     @Override
-    public @NotNull Member update(@NotNull Member member) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Member update(@NotNull Long memberId, @NotNull Member member)
+            throws BadRequest, InternalServerError, NotFound, NotUnique {
 
         Member original = null;
 
         try {
 
-            original = find(member.getId());
+            original = find(memberId);
             original.copy(member);
             original.setUpdated(LocalDateTime.now());
             entityManager.merge(original);

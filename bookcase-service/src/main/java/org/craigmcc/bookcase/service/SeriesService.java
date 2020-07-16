@@ -93,7 +93,12 @@ public class SeriesService extends ModelService<Series> {
     }
 
     @Override
-    public @NotNull Series find(@NotNull Long id) throws InternalServerError, NotFound {
+    public @NotNull Series find(@NotNull Long id)
+            throws InternalServerError, NotFound {
+
+        if (id == null) {
+            throw new NotFound("id: Cannot be null");
+        }
 
         try {
 
@@ -145,7 +150,8 @@ public class SeriesService extends ModelService<Series> {
     }
 
     @Override
-    public @NotNull Series insert(@NotNull Series series) throws BadRequest, InternalServerError, NotUnique {
+    public @NotNull Series insert(@NotNull Series series)
+            throws BadRequest, InternalServerError, NotUnique {
 
         try {
 
@@ -168,13 +174,14 @@ public class SeriesService extends ModelService<Series> {
     }
 
     @Override
-    public @NotNull Series update(@NotNull Series series) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Series update(@NotNull Long seriesId, @NotNull Series series)
+            throws BadRequest, InternalServerError, NotFound, NotUnique {
 
         Series original = null;
 
         try {
 
-            original = find(series.getId());
+            original = find(seriesId);
             original.copy(series);
             original.setUpdated(LocalDateTime.now());
             entityManager.merge(original);

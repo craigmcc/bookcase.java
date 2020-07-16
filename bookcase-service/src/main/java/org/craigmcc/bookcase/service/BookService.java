@@ -89,7 +89,12 @@ public class BookService extends ModelService<Book> {
     }
 
     @Override
-    public @NotNull Book find(@NotNull Long id) throws InternalServerError, NotFound {
+    public @NotNull Book find(@NotNull Long id)
+            throws InternalServerError, NotFound {
+
+        if (id == null) {
+            throw new NotFound("id: Cannot be null");
+        }
 
         try {
 
@@ -141,7 +146,8 @@ public class BookService extends ModelService<Book> {
     }
 
     @Override
-    public @NotNull Book insert(@NotNull Book book) throws BadRequest, InternalServerError, NotUnique {
+    public @NotNull Book insert(@NotNull Book book)
+            throws BadRequest, InternalServerError, NotUnique {
 
         try {
 
@@ -165,13 +171,14 @@ public class BookService extends ModelService<Book> {
     }
 
     @Override
-    public @NotNull Book update(@NotNull Book book) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Book update(@NotNull Long bookId, @NotNull Book book)
+            throws BadRequest, InternalServerError, NotFound, NotUnique {
 
         Book original = null;
 
         try {
 
-            original = find(book.getId());
+            original = find(bookId);
             original.copy(book);
             original.setUpdated(LocalDateTime.now());
             entityManager.merge(original);

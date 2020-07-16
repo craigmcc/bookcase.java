@@ -269,6 +269,7 @@ public class AnthologyEndpoints {
     }
 
     @PUT
+    @Path("/{anthologyId}")
     @Operation(description = "Update an existing anthology.")
     @APIResponses(value = {
             @APIResponse(
@@ -299,15 +300,17 @@ public class AnthologyEndpoints {
     })
     @Counted
     public Response update(
+            @Parameter(description = "ID of anthology to update.")
+            @PathParam("anthologyId") Long anthologyId,
             @Parameter(
                     description = "Anthology to be updated.",
                     name = "anthology",
                     schema = @Schema(implementation = Anthology.class)
             )
-                    Anthology anthology
+            Anthology anthology
     ) {
         try {
-            anthology = anthologyService.update(anthology);
+            anthology = anthologyService.update(anthologyId, anthology);
             return Response.ok(anthology).build();
         } catch (BadRequest e) {
             return Response.status(Response.Status.BAD_REQUEST)

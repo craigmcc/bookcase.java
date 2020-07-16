@@ -246,7 +246,7 @@ public class AuthorServiceTest extends AbstractServiceTest {
             /* Ignore */;
         }
         author.setNotes("Updated");
-        Author updated = authorService.update(author);
+        Author updated = authorService.update(author.getId(), author);
 
         // Validate this entity
         assertThat(updated.getId(), is(author.getId()));
@@ -270,19 +270,13 @@ public class AuthorServiceTest extends AbstractServiceTest {
             /* Ignore */;
         }
 
-        // Completely empty instance
-        final Author author0 = new Author();
-        author0.setId(original.getId());
-        assertThrows(BadRequest.class,
-                () -> authorService.update(author0));
-
         // Missing firstName field
         final Author author1 = newAuthor();
         author1.setId(original.getId());
         author1.setFirstName(null);
         author1.setLastName("Bar");
         assertThrows(BadRequest.class,
-                () -> authorService.insert(author1));
+                () -> authorService.update(author1.getId(), author1));
 
         // Missing lastName field
         final Author author2 = newAuthor();
@@ -290,7 +284,7 @@ public class AuthorServiceTest extends AbstractServiceTest {
         author2.setFirstName("Foo");
         author2.setLastName(null);
         assertThrows(BadRequest.class,
-                () -> authorService.insert(author2));
+                () -> authorService.update(author2.getId(), author2));
 
     }
 
@@ -301,7 +295,7 @@ public class AuthorServiceTest extends AbstractServiceTest {
         author.setFirstName("Barney");
         author.setLastName("Rubble");
         assertThrows(NotUnique.class,
-                () -> authorService.update(author));
+                () -> authorService.update(author.getId(), author));
 
     }
 

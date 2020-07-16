@@ -269,6 +269,7 @@ public class BookEndpoints {
     }
 
     @PUT
+    @Path("/{bookId}")
     @Operation(description = "Update an existing book.")
     @APIResponses(value = {
             @APIResponse(
@@ -299,15 +300,17 @@ public class BookEndpoints {
     })
     @Counted
     public Response update(
+            @Parameter(description = "ID of the Book to be updated.")
+            @PathParam("bookId") Long bookId,
             @Parameter(
                     description = "Book to be updated.",
                     name = "book",
                     schema = @Schema(implementation = Book.class)
             )
-                    Book book
+            Book book
     ) {
         try {
-            book = bookService.update(book);
+            book = bookService.update(bookId, book);
             return Response.ok(book).build();
         } catch (BadRequest e) {
             return Response.status(Response.Status.BAD_REQUEST)

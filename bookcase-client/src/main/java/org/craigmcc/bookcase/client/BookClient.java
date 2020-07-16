@@ -126,9 +126,10 @@ public class BookClient extends AbstractServiceClient<Book> {
     }
 
     @Override
-    public @NotNull Book update(@NotNull Book book) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Book update(@NotNull Long bookId, @NotNull Book book) throws BadRequest, InternalServerError, NotFound, NotUnique {
 
         Response response = bookTarget
+                .path(bookId.toString())
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(book, MediaType.APPLICATION_JSON));
         if (response.getStatus() == RESPONSE_OK) {

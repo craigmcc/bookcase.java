@@ -269,6 +269,7 @@ public class StoryEndpoints {
     }
 
     @PUT
+    @Path("/{storyId}")
     @Operation(description = "Update an existing story.")
     @APIResponses(value = {
             @APIResponse(
@@ -299,15 +300,17 @@ public class StoryEndpoints {
     })
     @Counted
     public Response update(
+            @Parameter(description = "ID of the Story to be updated.")
+            @PathParam("storyId") Long storyId,
             @Parameter(
                     description = "Story to be updated.",
                     name = "story",
                     schema = @Schema(implementation = Story.class)
             )
-                    Story story
+            Story story
     ) {
         try {
-            story = storyService.update(story);
+            story = storyService.update(storyId, story);
             return Response.ok(story).build();
         } catch (BadRequest e) {
             return Response.status(Response.Status.BAD_REQUEST)

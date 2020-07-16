@@ -269,6 +269,7 @@ public class AuthorEndpoints {
     }
 
     @PUT
+    @Path("/{authorId}")
     @Operation(description = "Update an existing author.")
     @APIResponses(value = {
             @APIResponse(
@@ -299,15 +300,17 @@ public class AuthorEndpoints {
     })
     @Counted
     public Response update(
+            @Parameter(description = "ID of the Author to be updated.")
+            @PathParam("authorId") Long authorId,
             @Parameter(
                     description = "Author to be updated.",
                     name = "author",
                     schema = @Schema(implementation = Author.class)
             )
-                    Author author
+            Author author
     ) {
         try {
-            author = authorService.update(author);
+            author = authorService.update(authorId, author);
             return Response.ok(author).build();
         } catch (BadRequest e) {
             return Response.status(Response.Status.BAD_REQUEST)

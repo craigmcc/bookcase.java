@@ -93,7 +93,12 @@ public class AuthorService extends ModelService<Author> {
     }
 
     @Override
-    public @NotNull Author find(@NotNull Long id) throws InternalServerError, NotFound {
+    public @NotNull Author find(@NotNull Long id)
+            throws InternalServerError, NotFound {
+
+        if (id == null) {
+            throw new NotFound("id: Cannot be null");
+        }
 
         try {
 
@@ -153,7 +158,8 @@ public class AuthorService extends ModelService<Author> {
     }
 
     @Override
-    public @NotNull Author insert(@NotNull Author author) throws BadRequest, InternalServerError, NotUnique {
+    public @NotNull Author insert(@NotNull Author author)
+            throws BadRequest, InternalServerError, NotUnique {
 
         try {
 
@@ -194,7 +200,8 @@ public class AuthorService extends ModelService<Author> {
     }
 
     @Override
-    public @NotNull Author update(@NotNull Author author) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Author update(@NotNull Long authorId, @NotNull Author author)
+            throws BadRequest, InternalServerError, NotFound, NotUnique {
 
         Author original = null;
 
@@ -215,7 +222,7 @@ public class AuthorService extends ModelService<Author> {
             }
 
             // Perform the requested update
-            original = find(author.getId());
+            original = find(authorId);
             original.copy(author);
             original.setUpdated(LocalDateTime.now());
             entityManager.merge(original);

@@ -126,9 +126,10 @@ public class AuthorClient extends AbstractServiceClient<Author> {
     }
 
     @Override
-    public @NotNull Author update(@NotNull Author author) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Author update(@NotNull Long authorId, @NotNull Author author) throws BadRequest, InternalServerError, NotFound, NotUnique {
 
         Response response = authorTarget
+                .path(authorId.toString())
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(author, MediaType.APPLICATION_JSON));
         if (response.getStatus() == RESPONSE_OK) {

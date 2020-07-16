@@ -269,6 +269,7 @@ public class MemberEndpoints {
     }
 
     @PUT
+    @Path("/{memberId}")
     @Operation(description = "Update an existing member.")
     @APIResponses(value = {
             @APIResponse(
@@ -299,15 +300,17 @@ public class MemberEndpoints {
     })
     @Counted
     public Response update(
+            @Parameter(description = "ID of the Member to be updated.")
+            @PathParam("memberId") Long memberId,
             @Parameter(
                     description = "Member to be updated.",
                     name = "member",
                     schema = @Schema(implementation = Member.class)
             )
-                    Member member
+            Member member
     ) {
         try {
-            member = memberService.update(member);
+            member = memberService.update(memberId, member);
             return Response.ok(member).build();
         } catch (BadRequest e) {
             return Response.status(Response.Status.BAD_REQUEST)

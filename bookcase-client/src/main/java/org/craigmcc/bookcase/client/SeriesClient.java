@@ -126,9 +126,10 @@ public class SeriesClient extends AbstractServiceClient<Series> {
     }
 
     @Override
-    public @NotNull Series update(@NotNull Series series) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Series update(@NotNull Long seriesId, @NotNull Series series) throws BadRequest, InternalServerError, NotFound, NotUnique {
 
         Response response = seriesTarget
+                .path(seriesId.toString())
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(series, MediaType.APPLICATION_JSON));
         if (response.getStatus() == RESPONSE_OK) {

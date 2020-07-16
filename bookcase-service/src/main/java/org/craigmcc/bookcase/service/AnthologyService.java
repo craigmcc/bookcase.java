@@ -93,7 +93,12 @@ public class AnthologyService extends ModelService<Anthology> {
     }
 
     @Override
-    public @NotNull Anthology find(@NotNull Long id) throws InternalServerError, NotFound {
+    public @NotNull Anthology find(@NotNull Long id)
+            throws InternalServerError, NotFound {
+
+        if (id == null) {
+            throw new NotFound("id: Cannot be null");
+        }
 
         try {
 
@@ -145,7 +150,8 @@ public class AnthologyService extends ModelService<Anthology> {
     }
 
     @Override
-    public @NotNull Anthology insert(@NotNull Anthology anthology) throws BadRequest, InternalServerError, NotUnique {
+    public @NotNull Anthology insert(@NotNull Anthology anthology)
+            throws BadRequest, InternalServerError, NotUnique {
 
         try {
 
@@ -169,13 +175,14 @@ public class AnthologyService extends ModelService<Anthology> {
     }
 
     @Override
-    public @NotNull Anthology update(@NotNull Anthology anthology) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Anthology update(@NotNull Long anthologyId, @NotNull Anthology anthology)
+            throws BadRequest, InternalServerError, NotFound, NotUnique {
 
         Anthology original = null;
 
         try {
 
-            original = find(anthology.getId());
+            original = find(anthologyId);
             original.copy(anthology);
             original.setUpdated(LocalDateTime.now());
             entityManager.merge(original);

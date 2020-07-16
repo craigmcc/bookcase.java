@@ -120,9 +120,10 @@ public class MemberClient extends AbstractServiceClient<Member> {
     }
 
     @Override
-    public @NotNull Member update(@NotNull Member member) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Member update(@NotNull Long memberId, @NotNull Member member) throws BadRequest, InternalServerError, NotFound, NotUnique {
 
         Response response = memberTarget
+                .path(memberId.toString())
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(member, MediaType.APPLICATION_JSON));
         if (response.getStatus() == RESPONSE_OK) {

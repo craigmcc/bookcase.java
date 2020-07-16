@@ -235,7 +235,7 @@ public class BookServiceTest extends AbstractServiceTest {
             /* Ignore */;
         }
         book.setTitle(book.getTitle() + " Updated");
-        Book updated = bookService.update(book);
+        Book updated = bookService.update(book.getId(), book);
 
         // Validate this entity
         assertThat(updated.getId(), is(book.getId()));
@@ -257,28 +257,17 @@ public class BookServiceTest extends AbstractServiceTest {
             /* Ignore */;
         }
 
-        // Completely empty instance
-        final Book book0 = new Book();
-        assertThrows(NotFound.class,
-                () -> bookService.update(book0));
-
-        // Missing authorId field
-        final Book book1 = original.clone();
-        book1.setAuthorId(null);
-        assertThrows(BadRequest.class,
-                () -> bookService.update(book1));
-
         // Invalid authorId field
         final Book book2 = original.clone();
         book2.setAuthorId(Long.MAX_VALUE);
         assertThrows(BadRequest.class,
-                () -> bookService.update(book1));
+                () -> bookService.update(book2.getId(), book2));
 
         // Missing title field
         final Book book3 = original.clone();
         book3.setTitle(null);
         assertThrows(BadRequest.class,
-                () -> bookService.update(book3));
+                () -> bookService.update(book3.getId(), book3));
 
     }
 

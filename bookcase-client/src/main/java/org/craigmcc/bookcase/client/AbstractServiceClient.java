@@ -96,6 +96,7 @@ public abstract class AbstractServiceClient<M extends Model> extends AbstractCli
     /**
      * <p>Update and return the specified {@link Model} object.</p>
      *
+     * @param id Primary key of the specified {@link Model} object.
      * @param model The {@link Model} object to be updated.
      *
      * @return The {@link Model} object with <code>updated</code> field updated.
@@ -105,6 +106,6 @@ public abstract class AbstractServiceClient<M extends Model> extends AbstractCli
      * @throws NotFound If no object with the specified primary key can be found.
      * @throws NotUnique If a uniqueness constraint has been violated.
      */
-    public abstract @NotNull M update(@NotNull M model) throws BadRequest, InternalServerError, NotFound, NotUnique;
+    public abstract @NotNull M update(@NotNull Long id, @NotNull M model) throws BadRequest, InternalServerError, NotFound, NotUnique;
 
 }

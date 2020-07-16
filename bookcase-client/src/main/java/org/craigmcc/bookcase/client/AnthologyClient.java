@@ -127,9 +127,10 @@ public class AnthologyClient extends AbstractServiceClient<Anthology> {
     }
 
     @Override
-    public @NotNull Anthology update(@NotNull Anthology anthology) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Anthology update(@NotNull Long anthologyId, @NotNull Anthology anthology) throws BadRequest, InternalServerError, NotFound, NotUnique {
 
         Response response = anthologyTarget
+                .path(anthologyId.toString())
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(anthology, MediaType.APPLICATION_JSON));
         if (response.getStatus() == RESPONSE_OK) {

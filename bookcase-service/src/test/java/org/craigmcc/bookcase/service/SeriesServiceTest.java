@@ -226,7 +226,7 @@ public class SeriesServiceTest extends AbstractServiceTest {
             /* Ignore */;
         }
         series.setTitle(series.getTitle() + " Updated");
-        Series updated = seriesService.update(series);
+        Series updated = seriesService.update(series.getId(), series);
 
         // Validate this entity
         assertThat(updated.getId(), is(series.getId()));
@@ -248,28 +248,23 @@ public class SeriesServiceTest extends AbstractServiceTest {
             /* Ignore */;
         }
 
-        // Completely empty instance
-        final Series series0 = new Series();
-        assertThrows(NotFound.class,
-                () -> seriesService.update(series0));
-
         // Missing authorId field
         final Series series1 = original.clone();
         series1.setAuthorId(null);
         assertThrows(BadRequest.class,
-                () -> seriesService.update(series1));
+                () -> seriesService.update(series1.getId(), series1));
 
         // Invalid authorId field
         final Series series2 = original.clone();
         series2.setAuthorId(Long.MAX_VALUE);
         assertThrows(BadRequest.class,
-                () -> seriesService.update(series1));
+                () -> seriesService.update(series2.getId(), series2));
 
         // Missing title field
         final Series series3 = original.clone();
         series3.setTitle(null);
         assertThrows(BadRequest.class,
-                () -> seriesService.update(series3));
+                () -> seriesService.update(series3.getId(), series3));
 
     }
 

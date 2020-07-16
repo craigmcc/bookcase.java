@@ -269,6 +269,7 @@ public class SeriesEndpoints {
     }
 
     @PUT
+    @Path("/{seriesId}")
     @Operation(description = "Update an existing series.")
     @APIResponses(value = {
             @APIResponse(
@@ -299,15 +300,17 @@ public class SeriesEndpoints {
     })
     @Counted
     public Response update(
+            @Parameter(description = "ID of the Series to be updated.")
+            @PathParam("seriesId") Long seriesId,
             @Parameter(
                     description = "Series to be updated.",
                     name = "Series",
                     schema = @Schema(implementation = Series.class)
             )
-                    Series series
+            Series series
     ) {
         try {
-            series = seriesService.update(series);
+            series = seriesService.update(seriesId, series);
             return Response.ok(series).build();
         } catch (BadRequest e) {
             return Response.status(Response.Status.BAD_REQUEST)

@@ -120,9 +120,10 @@ public class StoryClient extends AbstractServiceClient<Story> {
     }
 
     @Override
-    public @NotNull Story update(@NotNull Story story) throws BadRequest, InternalServerError, NotFound, NotUnique {
+    public @NotNull Story update(@NotNull Long storyId, @NotNull Story story) throws BadRequest, InternalServerError, NotFound, NotUnique {
 
         Response response = storyTarget
+                .path(storyId.toString())
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(story, MediaType.APPLICATION_JSON));
         if (response.getStatus() == RESPONSE_OK) {

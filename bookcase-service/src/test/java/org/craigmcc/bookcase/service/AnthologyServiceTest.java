@@ -226,7 +226,7 @@ public class AnthologyServiceTest extends AbstractServiceTest {
             /* Ignore */;
         }
         anthology.setTitle(anthology.getTitle() + " Updated");
-        Anthology updated = anthologyService.update(anthology);
+        Anthology updated = anthologyService.update(anthology.getId(), anthology);
 
         // Validate this entity
         assertThat(updated.getId(), is(anthology.getId()));
@@ -248,28 +248,17 @@ public class AnthologyServiceTest extends AbstractServiceTest {
             /* Ignore */;
         }
 
-        // Completely empty instance
-        final Anthology anthology0 = new Anthology();
-        assertThrows(NotFound.class,
-                () -> anthologyService.update(anthology0));
-
-        // Missing authorId field
-        final Anthology anthology1 = original.clone();
-        anthology1.setAuthorId(null);
-        assertThrows(BadRequest.class,
-                () -> anthologyService.update(anthology1));
-
         // Invalid authorId field
         final Anthology anthology2 = original.clone();
         anthology2.setAuthorId(Long.MAX_VALUE);
         assertThrows(BadRequest.class,
-                () -> anthologyService.update(anthology1));
+                () -> anthologyService.update(anthology2.getId(), anthology2));
 
         // Missing title field
         final Anthology anthology3 = original.clone();
         anthology3.setTitle(null);
         assertThrows(BadRequest.class,
-                () -> anthologyService.update(anthology3));
+                () -> anthologyService.update(anthology3.getId(), anthology3));
 
     }
 
